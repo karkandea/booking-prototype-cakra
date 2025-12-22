@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { MapPin, Clock, Star, ChevronRight, Zap, Shield, Users } from "lucide-react";
+import { MapPin, Clock, Star, ChevronRight, Zap } from "lucide-react";
 import Link from "next/link";
 import { fields, formatCurrency } from "@/lib/data";
 import { Button } from "@/components/ui/button";
@@ -49,62 +49,9 @@ export default function Home() {
             </div>
           </div>
           
-          {/* Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-20 max-w-4xl mx-auto">
-            {[
-              { label: "Lapangan Aktif", value: "3+" },
-              { label: "Booking/Bulan", value: "500+" },
-              { label: "Pelanggan Puas", value: "98%" },
-              { label: "Jam Operasional", value: "14 Jam" },
-            ].map((stat) => (
-              <div key={stat.label} className="text-center p-4 rounded-2xl bg-white/80 backdrop-blur-sm border border-gray-200 shadow-sm">
-                <div className="text-2xl sm:text-3xl font-bold text-emerald-600">{stat.value}</div>
-                <div className="text-sm text-gray-500">{stat.label}</div>
-              </div>
-            ))}
-          </div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="py-20 border-t border-gray-200 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-gray-900">Kenapa Pilih Kami?</h2>
-            <p className="text-gray-600 max-w-xl mx-auto">
-              Kami menyediakan pengalaman booking yang mudah dan cepat
-            </p>
-          </div>
-          
-          <div className="grid md:grid-cols-3 gap-8">
-            {[
-              {
-                icon: Zap,
-                title: "Booking Instan",
-                description: "Pilih jadwal dan langsung booking tanpa perlu menunggu konfirmasi",
-              },
-              {
-                icon: Shield,
-                title: "Pembayaran Aman",
-                description: "Transaksi aman dengan berbagai metode pembayaran",
-              },
-              {
-                icon: Users,
-                title: "Support 24/7",
-                description: "Tim kami siap membantu kapanpun Anda butuhkan",
-              },
-            ].map((feature) => (
-              <div key={feature.title} className="p-6 rounded-2xl bg-gradient-to-b from-gray-50 to-white border border-gray-200 hover:border-emerald-300 hover:shadow-lg transition-all group">
-                <div className="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                  <feature.icon className="w-6 h-6 text-emerald-600" />
-                </div>
-                <h3 className="text-xl font-semibold mb-2 text-gray-900">{feature.title}</h3>
-                <p className="text-gray-600">{feature.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* Fields Section */}
       <section className="py-20 border-t border-gray-200">
@@ -174,23 +121,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-20 border-t border-gray-200 bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="p-8 sm:p-12 rounded-3xl bg-gradient-to-br from-emerald-50 via-white to-blue-50 border border-emerald-200 shadow-lg">
-            <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-gray-900">Siap Booking Sekarang?</h2>
-            <p className="text-gray-600 mb-8">
-              Jangan sampai kehabisan jadwal. Booking sekarang dan nikmati pengalaman bermain terbaik!
-            </p>
-            <Link href="/booking">
-              <Button size="lg" className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-6 text-lg rounded-xl shadow-lg shadow-emerald-500/25">
-                Mulai Booking
-                <ChevronRight className="ml-2 w-5 h-5" />
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
 
       {/* Footer */}
       <footer className="py-12 border-t border-gray-200 bg-white">
