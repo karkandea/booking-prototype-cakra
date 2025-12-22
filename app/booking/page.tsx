@@ -524,8 +524,22 @@ function BookingContent() {
                     ) : (
                       <>
                         {paymentStatus === "failed" && (
-                          <div className="p-3 rounded-xl bg-red-50 border border-red-100 text-center mb-4">
-                            <p className="text-xs text-red-600 font-bold">Simulasi Pembayaran Gagal</p>
+                          <div className="space-y-4 mb-4">
+                            <div className="p-3 rounded-xl bg-red-50 border border-red-100 text-center">
+                              <p className="text-xs text-red-600 font-bold">Simulasi Pembayaran Gagal</p>
+                              <p className="text-[10px] text-gray-500 mt-1">Silakan coba lagi atau pilih metode lain</p>
+                            </div>
+                            <Button 
+                              variant="outline" 
+                              onClick={() => {
+                                setSelectedPaymentType(null);
+                                setSelectedPaymentDetail(null);
+                                setPaymentStatus("idle");
+                              }}
+                              className="w-full border-gray-200 text-gray-600 h-10 text-xs"
+                            >
+                              Pilih Metode Pembayaran Lain
+                            </Button>
                           </div>
                         )}
                         <Button 

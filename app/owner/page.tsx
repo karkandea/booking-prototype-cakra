@@ -233,9 +233,17 @@ export default function OwnerDashboard() {
                   </h4>
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
-                      <span className="text-gray-500">Metode</span>
-                      <span className="text-gray-900">{selectedBooking.paymentMethod === "full" ? "Bayar Penuh" : "DP 50%"}</span>
+                      <span className="text-gray-500">Opsi</span>
+                      <span className="text-gray-900 font-medium">{selectedBooking.paymentMethod === "full" ? "Bayar Penuh" : "DP 50%"}</span>
                     </div>
+                    {selectedBooking.paymentType && (
+                      <div className="flex justify-between">
+                        <span className="text-gray-500">Metode</span>
+                        <span className="text-gray-900 font-medium uppercase text-xs">
+                          {selectedBooking.paymentType} {selectedBooking.paymentDetail && `- ${selectedBooking.paymentDetail}`}
+                        </span>
+                      </div>
+                    )}
                     <div className="flex justify-between">
                       <span className="text-gray-500">Status</span>
                       {getStatusBadge(selectedBooking.paymentStatus)}
