@@ -1,0 +1,165 @@
+{
+  "master": {
+    "tasks": [
+      {
+        "id": "1",
+        "title": "Set Up Project Structure",
+        "description": "Initialize the project repository and set up the basic file structure for the Sports Field Booking Platform prototype.",
+        "details": "Create a new Git repository. Set up a basic folder structure including 'src', 'public', and 'assets'. Initialize package.json with necessary dependencies for a React or Vue.js frontend framework.",
+        "testStrategy": "Verify that the project structure is correctly set up by checking the presence of all required folders and files.",
+        "priority": "medium",
+        "dependencies": [],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-12-22T09:39:43.086Z"
+      },
+      {
+        "id": "2",
+        "title": "Develop Landing Page",
+        "description": "Create the landing page that displays the hero section, field photos, and a 'Book Now' CTA.",
+        "details": "Use HTML, CSS, and JavaScript to build the landing page. Ensure responsiveness and fast loading. Use dummy data for field images and descriptions.",
+        "testStrategy": "Conduct user testing to ensure the landing page is visually appealing and the 'Book Now' button functions correctly.",
+        "priority": "high",
+        "dependencies": [
+          "1"
+        ],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-12-22T09:39:43.088Z"
+      },
+      {
+        "id": "3",
+        "title": "Implement Booking Form",
+        "description": "Create a booking form with fields for name, email, and phone number with validation.",
+        "details": "Develop a form component that includes required field validation and basic format checks. Implement error and confirmation states using UI feedback.",
+        "testStrategy": "Test the form for validation errors and ensure that successful submissions trigger the appropriate confirmation state.",
+        "priority": "high",
+        "dependencies": [
+          "2"
+        ],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-12-22T09:39:43.089Z"
+      },
+      {
+        "id": "4",
+        "title": "Schedule Selection Functionality",
+        "description": "Implement the schedule selection feature allowing users to choose location, date, time, and duration.",
+        "details": "Create a component for selecting available slots using dummy data. Include a confirmation screen before proceeding to payment.",
+        "testStrategy": "Simulate various user selections and verify that the correct availability is displayed and the confirmation screen appears as expected.",
+        "priority": "high",
+        "dependencies": [
+          "3"
+        ],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-12-22T09:39:43.090Z"
+      },
+      {
+        "id": "5",
+        "title": "Dummy Payment Flow",
+        "description": "Develop a dummy payment flow that simulates payment success and failure.",
+        "details": "Create a payment component with buttons for 'Simulate Success' and 'Simulate Failed'. Use dummy data to simulate payment outcomes.",
+        "testStrategy": "Test both payment scenarios to ensure that the correct messages are displayed for success and failure.",
+        "priority": "medium",
+        "dependencies": [
+          "4"
+        ],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-12-22T09:39:43.091Z"
+      },
+      {
+        "id": "6",
+        "title": "Booking Confirmation Screen",
+        "description": "Create a confirmation screen that displays booking success or failure messages.",
+        "details": "Design a confirmation component that shows a success message, booking ID, and a static barcode image for successful bookings, or an error message for failures.",
+        "testStrategy": "Verify that the confirmation screen displays the correct information based on the payment outcome.",
+        "priority": "medium",
+        "dependencies": [
+          "5"
+        ],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-12-22T09:39:43.092Z"
+      },
+      {
+        "id": "7",
+        "title": "Owner Dashboard Development",
+        "description": "Develop a simple owner dashboard to view bookings and details.",
+        "details": "Create a dashboard component that lists user bookings, including user name, schedule, and payment status. Include a barcode preview for each booking.",
+        "testStrategy": "Ensure that the dashboard displays dummy booking data correctly and that the barcode preview functions as intended.",
+        "priority": "medium",
+        "dependencies": [
+          "6"
+        ],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-12-22T09:39:43.093Z"
+      },
+      {
+        "id": "8",
+        "title": "Simulate Barcode Ticketing",
+        "description": "Implement a simulation for barcode ticketing for booking confirmation.",
+        "details": "Generate a static barcode image for each booking confirmation using a library like 'bwip-js' or similar.",
+        "testStrategy": "Verify that the barcode is generated correctly and can be displayed on the confirmation screen.",
+        "priority": "low",
+        "dependencies": [
+          "6"
+        ],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-12-22T09:39:43.094Z"
+      },
+      {
+        "id": "9",
+        "title": "Responsive Design Implementation",
+        "description": "Ensure that the entire prototype is mobile-friendly and responsive.",
+        "details": "Utilize CSS media queries and flexible layouts to ensure the UI adapts to different screen sizes.",
+        "testStrategy": "Conduct testing on various devices and screen sizes to ensure that the layout is responsive and user-friendly.",
+        "priority": "medium",
+        "dependencies": [
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7"
+        ],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-12-22T09:39:43.095Z"
+      },
+      {
+        "id": "10",
+        "title": "User Acceptance Testing",
+        "description": "Conduct user acceptance testing to gather feedback on the prototype.",
+        "details": "Organize sessions with potential users to navigate through the prototype and provide feedback on the user experience.",
+        "testStrategy": "Collect qualitative feedback and observe user interactions to identify areas for improvement.",
+        "priority": "high",
+        "dependencies": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9"
+        ],
+        "status": "pending",
+        "subtasks": []
+      }
+    ],
+    "metadata": {
+      "version": "1.0.0",
+      "lastModified": "2025-12-22T09:39:43.095Z",
+      "taskCount": 10,
+      "completedCount": 9,
+      "tags": [
+        "master"
+      ]
+    }
+  }
+}
