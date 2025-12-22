@@ -1,0 +1,97 @@
+{
+  "payment": {
+    "tasks": [
+      {
+        "id": "P1",
+        "title": "Implement Payment Method Selection UI",
+        "description": "Create the UI for choosing between different payment methods (VA, QRIS, E-Wallet, Retail, Card).",
+        "details": "Display icons and labels for all supported payment methods provided by Xendit as listed in PRD-Payment.md. Ensure proper layout and responsiveness.",
+        "testStrategy": "Verify that all payment methods are visible and clickable, leading to their respective simulation views.",
+        "priority": "high",
+        "dependencies": [],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-12-22T21:15:00.000Z"
+      },
+      {
+        "id": "P2",
+        "title": "Develop Virtual Account Simulation",
+        "description": "Simulate the Virtual Account payment flow for multiple banks.",
+        "details": "Create views for BCA, BNI, BRI, Mandiri, Permata, and CIMB Niaga. Display dummy VA numbers, total payment, and simulation buttons (Success/Failed).",
+        "testStrategy": "Test bank selection and verify that dummy VA numbers and simulation buttons are displayed correctly.",
+        "priority": "medium",
+        "dependencies": ["P1"],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-12-22T21:15:00.000Z"
+      },
+      {
+        "id": "P3",
+        "title": "Develop QRIS Simulation",
+        "description": "Simulate the QRIS payment flow with a static QR code.",
+        "details": "Display a static QR code image, an optional countdown timer (visual only), and buttons for 'I've Paid' (Success) and 'Cancel'.",
+        "testStrategy": "Verify that the QR code is displayed and the 'I've Paid' button triggers the success state.",
+        "priority": "medium",
+        "dependencies": ["P1"],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-12-22T21:15:00.000Z"
+      },
+      {
+        "id": "P4",
+        "title": "Develop E-Wallet Simulation",
+        "description": "Simulate payment flows for GoPay, OVO, DANA, ShopeePay, and LinkAja.",
+        "details": "Display logos for each e-wallet, instructions for opening the respective app, and simulation buttons (Success/Failed).",
+        "testStrategy": "Verify that all e-wallet options display the correct logos and trigger simulation states.",
+        "priority": "medium",
+        "dependencies": ["P1"],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-12-22T21:15:00.000Z"
+      },
+      {
+        "id": "P5",
+        "title": "Develop Retail Outlet Simulation",
+        "description": "Simulate payment flows for Alfamart and Indomaret.",
+        "details": "Display payment codes, instructions for over-the-counter payment, and buttons for 'Simulate Paid' and 'Cancel'.",
+        "testStrategy": "Verify that retail outlet views display dummy codes and correctly handle simulation actions.",
+        "priority": "medium",
+        "dependencies": ["P1"],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-12-22T21:15:00.000Z"
+      },
+      {
+        "id": "P6",
+        "title": "Develop Credit/Debit Card Simulation",
+        "description": "Simulate the credit/debit card payment interface.",
+        "details": "Create input fields for card number (masked), expiry date, and CVV. Include 'Pay Now' (Success) and 'Fail Payment' buttons.",
+        "testStrategy": "Verify that input fields exist and buttons correctly simulate the payment outcomes.",
+        "priority": "medium",
+        "dependencies": ["P1"],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-12-22T21:15:00.000Z"
+      },
+      {
+        "id": "P7",
+        "title": "Implement Payment Success and Failure States",
+        "description": "Handle the outcomes of all payment simulations.",
+        "details": "On success, display a success message and booking confirmation with a barcode. On failure, display an error message and options to retry or choose another method.",
+        "testStrategy": "Verify that all simulation buttons across all methods lead to either the success or failure state as intended.",
+        "priority": "high",
+        "dependencies": ["P2", "P3", "P4", "P5", "P6"],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-12-22T21:15:00.000Z"
+      }
+    ],
+    "metadata": {
+      "version": "1.0.0",
+      "lastModified": "2025-12-22T21:15:00.000Z",
+      "taskCount": 7,
+      "completedCount": 7,
+      "tags": ["payment", "dummy", "xendit"]
+    }
+  }
+}

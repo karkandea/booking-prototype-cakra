@@ -3,7 +3,7 @@
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, User, Calendar, CreditCard, CheckCircle, Loader2 } from "lucide-react";
+import { ArrowLeft, User, Calendar, CreditCard, CheckCircle, Loader2, Building, QrCode, Wallet, Store, ChevronRight, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -13,8 +13,21 @@ import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { fields, generateTimeSlots, formatCurrency, generateBookingId } from "@/lib/data";
-import { BookingFormData, ScheduleData, Booking, TimeSlot } from "@/lib/types";
+import { BookingFormData, ScheduleData, Booking, TimeSlot, PaymentType } from "@/lib/types";
 import { QRCodeGenerator } from "@/components/QRCodeGenerator";
+
+const PAYMENT_TYPES = [
+  { id: "va", name: "Virtual Account", icon: Building, description: "BCA, BNI, BRI, Mandiri, Permata, CIMB" },
+  { id: "qris", name: "QRIS", icon: QrCode, description: "Scan QR menggunakan aplikasi e-wallet atau mobile banking" },
+  { id: "ewallet", name: "E-Wallet", icon: Wallet, description: "GoPay, OVO, DANA, ShopeePay, LinkAja" },
+  { id: "retail", name: "Retail Outlet", icon: Store, description: "Alfamart, Indomaret" },
+  { id: "card", name: "Kartu Kredit/Debit", icon: CreditCard, description: "Visa, Mastercard" },
+] as const;
+
+const VA_BANKS = ["BCA", "BNI", "BRI", "Mandiri", "Permata", "CIMB Niaga"];
+const E_WALLETS = ["GoPay", "OVO", "DANA", "ShopeePay", "LinkAja"];
+const RETAIL_OUTLETS = ["Alfamart", "Indomaret"];
+const CARD_TYPES = ["Visa", "Mastercard"];
 
 function BookingContent() {
   const searchParams = useSearchParams();
@@ -29,7 +42,9 @@ function BookingContent() {
     duration: 1,
   });
   const [paymentMethod, setPaymentMethod] = useState<"full" | "dp">("full");
-  const [paymentStatus, setPaymentStatus] = useState<"idle" | "processing" | "success" | "failed">("idle");
+  const [selectedPaymentType, setSelectedPaymentType] = useState<PaymentType | null>(null);
+  const [selectedPaymentDetail, setSelectedPaymentDetail] = useState<string | null>(null);
+  const [paymentStatus, setPaymentStatus] = useState<"idle" | "processing" | "success" | "failed" | "simulating">("idle");
   const [booking, setBooking] = useState<Booking | null>(null);
   const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -82,6 +97,8 @@ function BookingContent() {
           totalPrice: selectedField.pricePerHour * scheduleData.duration * (paymentMethod === "dp" ? 0.5 : 1),
           paymentStatus: paymentMethod === "dp" ? "partial" : "paid",
           paymentMethod,
+          paymentType: selectedPaymentType || undefined,
+          paymentDetail: selectedPaymentDetail || undefined,
           createdAt: new Date().toISOString(),
           barcode: `${generateBookingId()}-VERIFIED`,
         };
@@ -301,102 +318,241 @@ function BookingContent() {
 
         {/* Step 3: Payment */}
         {step === 3 && (
-          <Card className="bg-white border-gray-200 shadow-sm">
-            <CardHeader>
-              <CardTitle className="text-gray-900">Pembayaran</CardTitle>
-              <CardDescription>Pilih metode pembayaran dan simulasikan transaksi</CardDescription>
+          <Card className="bg-white border-gray-200 shadow-sm overflow-hidden">
+            <CardHeader className="border-b border-gray-100 bg-gray-50/50">
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="text-gray-900">Pembayaran</CardTitle>
+                  <CardDescription>Pilih metode pembayaran untuk menyelesaikan booking</CardDescription>
+                </div>
+                <div className="text-right">
+                  <div className="text-xs text-gray-500 uppercase tracking-wider font-semibold">Total Bayar</div>
+                  <div className="text-xl font-bold text-emerald-600">{formatCurrency(payAmount)}</div>
+                </div>
+              </div>
             </CardHeader>
-            <CardContent className="space-y-6">
-              {/* Booking Summary */}
-              <div className="p-4 rounded-lg bg-gray-50 border border-gray-200">
-                <h3 className="font-semibold text-gray-900 mb-3">Ringkasan Booking</h3>
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between text-gray-600">
-                    <span>Lapangan</span>
-                    <span className="text-gray-900">{selectedField.name}</span>
+            <CardContent className="p-0">
+              {!selectedPaymentType ? (
+                /* Screen 1: Choose Payment Type */
+                <div className="p-6">
+                  {/* Payment Strategy (Full/DP) */}
+                  <div className="mb-8">
+                    <Label className="text-gray-700 mb-3 block font-semibold">Opsi Pembayaran</Label>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div 
+                        onClick={() => setPaymentMethod("full")}
+                        className={`cursor-pointer p-4 rounded-xl border-2 transition-all flex items-center gap-3 ${
+                          paymentMethod === "full" ? "border-emerald-500 bg-emerald-50" : "border-gray-100 bg-white hover:border-gray-200"
+                        }`}
+                      >
+                        <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${paymentMethod === "full" ? "border-emerald-500" : "border-gray-300"}`}>
+                          {paymentMethod === "full" && <div className="w-2.5 h-2.5 rounded-full bg-emerald-500" />}
+                        </div>
+                        <div className="flex-1">
+                          <div className="text-sm font-bold text-gray-900">Bayar Penuh</div>
+                          <div className="text-xs text-gray-500 font-medium">Lunas Sekarang</div>
+                        </div>
+                        <Badge className="bg-emerald-100 text-emerald-700 border-none text-[10px]">Recommended</Badge>
+                      </div>
+                      <div 
+                        onClick={() => setPaymentMethod("dp")}
+                        className={`cursor-pointer p-4 rounded-xl border-2 transition-all flex items-center gap-3 ${
+                          paymentMethod === "dp" ? "border-emerald-500 bg-emerald-50" : "border-gray-100 bg-white hover:border-gray-200"
+                        }`}
+                      >
+                        <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${paymentMethod === "dp" ? "border-emerald-500" : "border-gray-300"}`}>
+                          {paymentMethod === "dp" && <div className="w-2.5 h-2.5 rounded-full bg-emerald-500" />}
+                        </div>
+                        <div className="flex-1">
+                          <div className="text-sm font-bold text-gray-900">DP 50%</div>
+                          <div className="text-xs text-gray-500 font-medium">Bayar di lokasi: {formatCurrency(totalPrice * 0.5)}</div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex justify-between text-gray-600">
-                    <span>Tanggal</span>
-                    <span className="text-gray-900">{scheduleData.date?.toLocaleDateString("id-ID")}</span>
+
+                  <Label className="text-gray-700 mb-3 block font-semibold">Pilih Metode Pembayaran</Label>
+                  <div className="space-y-3">
+                    {PAYMENT_TYPES.map((type) => (
+                      <div
+                        key={type.id}
+                        onClick={() => {
+                          setSelectedPaymentType(type.id);
+                          if (type.id === "qris") setSelectedPaymentDetail("QRIS (All Payment)");
+                        }}
+                        className="group cursor-pointer p-4 rounded-xl border border-gray-200 bg-white hover:border-emerald-500 hover:shadow-md transition-all flex items-center gap-4"
+                      >
+                        <div className="w-12 h-12 rounded-lg bg-gray-50 flex items-center justify-center group-hover:bg-emerald-50 transition-colors">
+                          <type.icon className="w-6 h-6 text-gray-400 group-hover:text-emerald-600" />
+                        </div>
+                        <div className="flex-1">
+                          <div className="font-bold text-gray-900">{type.name}</div>
+                          <div className="text-xs text-gray-500 line-clamp-1">{type.description}</div>
+                        </div>
+                        <ChevronRight className="w-5 h-5 text-gray-300 group-hover:text-emerald-500" />
+                      </div>
+                    ))}
                   </div>
-                  <div className="flex justify-between text-gray-600">
-                    <span>Waktu</span>
-                    <span className="text-gray-900">{scheduleData.time} ({scheduleData.duration} jam)</span>
-                  </div>
-                  <div className="flex justify-between text-gray-600">
-                    <span>Nama</span>
-                    <span className="text-gray-900">{formData.name}</span>
+
+                  <div className="mt-8 pt-6 border-t border-gray-100">
+                    <Button variant="ghost" onClick={() => setStep(2)} className="w-full text-gray-500 hover:text-gray-900 flex items-center justify-center gap-2">
+                      <ArrowLeft className="w-4 h-4" />
+                      Kembali ke Jadwal
+                    </Button>
                   </div>
                 </div>
-              </div>
-
-              {/* Payment Method */}
-              <div>
-                <Label className="text-gray-700 mb-3 block">Metode Pembayaran</Label>
-                <RadioGroup value={paymentMethod} onValueChange={(v) => setPaymentMethod(v as "full" | "dp")}>
-                  <div className="flex items-center space-x-2 p-4 rounded-lg border border-gray-200 bg-white hover:border-emerald-300 transition-colors">
-                    <RadioGroupItem value="full" id="full" />
-                    <Label htmlFor="full" className="flex-1 cursor-pointer">
-                      <div className="text-gray-900">Bayar Penuh</div>
-                      <div className="text-sm text-gray-500">{formatCurrency(totalPrice)}</div>
-                    </Label>
-                    <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200">Recommended</Badge>
+              ) : !selectedPaymentDetail ? (
+                /* Screen 2: Choose Payment Detail (for VA, E-Wallet, etc.) */
+                <div className="p-6">
+                  <div className="flex items-center gap-2 mb-6">
+                    <Button variant="ghost" size="sm" onClick={() => setSelectedPaymentType(null)} className="h-8 w-8 p-0 rounded-full">
+                      <ArrowLeft className="w-4 h-4" />
+                    </Button>
+                    <Badge variant="secondary" className="bg-emerald-50 text-emerald-700 border-none font-bold uppercase tracking-wider text-[10px]">
+                      {PAYMENT_TYPES.find(t => t.id === selectedPaymentType)?.name}
+                    </Badge>
                   </div>
-                  <div className="flex items-center space-x-2 p-4 rounded-lg border border-gray-200 bg-white hover:border-emerald-300 transition-colors mt-2">
-                    <RadioGroupItem value="dp" id="dp" />
-                    <Label htmlFor="dp" className="flex-1 cursor-pointer">
-                      <div className="text-gray-900">DP 50%</div>
-                      <div className="text-sm text-gray-500">{formatCurrency(totalPrice * 0.5)} (sisa bayar di lokasi)</div>
-                    </Label>
+                  
+                  <Label className="text-gray-700 mb-4 block font-semibold">Pilih Provider</Label>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {(selectedPaymentType === "va" ? VA_BANKS : 
+                      selectedPaymentType === "ewallet" ? E_WALLETS : 
+                      selectedPaymentType === "retail" ? RETAIL_OUTLETS : 
+                      CARD_TYPES).map((detail) => (
+                      <div
+                        key={detail}
+                        onClick={() => setSelectedPaymentDetail(detail)}
+                        className="cursor-pointer p-4 rounded-xl border border-gray-200 bg-white hover:border-emerald-500 hover:shadow-sm transition-all flex items-center justify-between group"
+                      >
+                        <span className="font-medium text-gray-900">{detail}</span>
+                        <div className="w-6 h-6 rounded-full border border-gray-200 flex items-center justify-center group-hover:border-emerald-500 group-hover:bg-emerald-50 transition-all">
+                          <div className="w-2 h-2 rounded-full bg-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                </RadioGroup>
-              </div>
-
-              {/* Payment Amount */}
-              <div className="p-4 rounded-lg bg-emerald-50 border border-emerald-200">
-                <div className="flex justify-between text-lg font-bold">
-                  <span className="text-emerald-700">Total Bayar Sekarang</span>
-                  <span className="text-emerald-700">{formatCurrency(payAmount)}</span>
                 </div>
-              </div>
+              ) : (
+                /* Screen 3: Simulation Screen */
+                <div className="p-6">
+                  <div className="flex items-center gap-2 mb-6">
+                    <Button variant="ghost" size="sm" onClick={() => setSelectedPaymentDetail(null)} className="h-8 w-8 p-0 rounded-full">
+                      <ArrowLeft className="w-4 h-4" />
+                    </Button>
+                    <div className="flex items-center gap-2">
+                       <Badge variant="secondary" className="bg-emerald-50 text-emerald-700 border-none font-bold uppercase tracking-wider text-[10px]">
+                        {PAYMENT_TYPES.find(t => t.id === selectedPaymentType)?.name}
+                      </Badge>
+                      <span className="text-gray-300">/</span>
+                      <span className="text-sm font-bold text-gray-900">{selectedPaymentDetail}</span>
+                    </div>
+                  </div>
 
-              {/* Payment Status */}
-              {paymentStatus === "processing" && (
-                <div className="flex items-center justify-center p-8">
-                  <Loader2 className="w-8 h-8 text-emerald-600 animate-spin" />
-                  <span className="ml-3 text-gray-600">Memproses pembayaran...</span>
+                  {/* Simulation Area */}
+                  <div className="p-8 rounded-2xl bg-gray-50 border border-gray-200 mb-8 flex flex-col items-center text-center">
+                    {selectedPaymentType === "va" && (
+                      <div className="space-y-4 w-full">
+                        <div className="text-xs text-gray-500 font-bold uppercase tracking-widest">Nomor Virtual Account</div>
+                        <div className="text-2xl font-mono font-bold text-gray-900 tracking-wider">8801 {Math.floor(1000 + Math.random() * 9000)} {Math.floor(1000 + Math.random() * 9000)}</div>
+                        <div className="pt-4 border-t border-gray-200">
+                          <p className="text-sm text-gray-600">Silakan transfer sesuai nominal ke nomor VA di atas</p>
+                        </div>
+                      </div>
+                    )}
+
+                    {selectedPaymentType === "qris" && (
+                      <div className="space-y-4">
+                        <div className="p-4 bg-white rounded-xl shadow-sm border border-gray-100 mx-auto w-fit">
+                          <QRCodeGenerator value="DUMMY_QRIS_PAYMENT_DATA" size={160} />
+                        </div>
+                        <div>
+                          <p className="text-sm font-bold text-gray-900">Scan QRIS untuk membayar</p>
+                          <p className="text-xs text-gray-500 mt-1 italic">QRIS support all payment apps</p>
+                        </div>
+                      </div>
+                    )}
+
+                    {selectedPaymentType === "ewallet" && (
+                      <div className="space-y-4">
+                        <div className="w-16 h-16 rounded-2xl bg-white shadow-sm flex items-center justify-center mx-auto mb-2 border border-gray-100">
+                          <Wallet className="w-8 h-8 text-emerald-600" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-bold text-gray-900">Selesaikan pembayaran di aplikasi {selectedPaymentDetail}</p>
+                          <p className="text-xs text-gray-500 mt-1">Buka aplikasi {selectedPaymentDetail} Anda untuk konfirmasi</p>
+                        </div>
+                      </div>
+                    )}
+
+                    {selectedPaymentType === "retail" && (
+                      <div className="space-y-4 w-full">
+                        <div className="text-xs text-gray-500 font-bold uppercase tracking-widest">Kode Pembayaran</div>
+                        <div className="text-2xl font-mono font-bold text-gray-900 tracking-wider">PRTY-{Math.floor(100000 + Math.random() * 900000)}</div>
+                        <div className="pt-4 border-t border-gray-200">
+                          <p className="text-sm text-gray-600">Tunjukkan kode ini ke kasir {selectedPaymentDetail}</p>
+                        </div>
+                      </div>
+                    )}
+
+                    {selectedPaymentType === "card" && (
+                      <div className="w-full space-y-4 text-left">
+                        <div className="space-y-2">
+                          <Label className="text-gray-600 text-[10px] uppercase font-bold">Nomor Kartu</Label>
+                          <Input disabled value="**** **** **** 4242" className="bg-white border-gray-200 font-mono" />
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <Label className="text-gray-600 text-[10px] uppercase font-bold">Expiry</Label>
+                            <Input disabled value="12/28" className="bg-white border-gray-200" />
+                          </div>
+                          <div className="space-y-2">
+                            <Label className="text-gray-600 text-[10px] uppercase font-bold">CVV</Label>
+                            <Input disabled value="***" className="bg-white border-gray-200" />
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Actions */}
+                  <div className="space-y-3">
+                    {paymentStatus === "processing" ? (
+                      <div className="flex flex-col items-center justify-center p-4">
+                        <Loader2 className="w-8 h-8 text-emerald-600 animate-spin" />
+                        <span className="mt-2 text-sm font-medium text-gray-600">Memproses...</span>
+                      </div>
+                    ) : (
+                      <>
+                        {paymentStatus === "failed" && (
+                          <div className="p-3 rounded-xl bg-red-50 border border-red-100 text-center mb-4">
+                            <p className="text-xs text-red-600 font-bold">Simulasi Pembayaran Gagal</p>
+                          </div>
+                        )}
+                        <Button 
+                          onClick={() => handlePayment(true)}
+                          className="w-full bg-emerald-600 hover:bg-emerald-700 text-white h-14 rounded-xl shadow-lg shadow-emerald-500/20"
+                        >
+                          Simulate Success
+                        </Button>
+                        <Button 
+                          onClick={() => handlePayment(false)}
+                          variant="ghost" 
+                          className="w-full text-red-500 hover:text-red-600 hover:bg-red-50 h-14 rounded-xl"
+                        >
+                          Simulate Failure
+                        </Button>
+                      </>
+                    )}
+                  </div>
+
+                  <div className="mt-4 flex items-start gap-2 p-3 rounded-lg bg-blue-50/50 border border-blue-100">
+                    <Info className="w-4 h-4 text-blue-500 mt-0.5 shrink-0" />
+                    <p className="text-[10px] text-blue-600 leading-relaxed font-medium">
+                      Ini adalah simulasi dummy untuk tujuan prototype. Tidak ada transaksi riil yang terjadi. Sesuai PRD, simulasi ini mengikuti flow Xendit.
+                    </p>
+                  </div>
                 </div>
               )}
-
-              {paymentStatus === "failed" && (
-                <div className="p-4 rounded-lg bg-red-50 border border-red-200 text-center">
-                  <p className="text-red-600 font-semibold">Pembayaran Gagal</p>
-                  <p className="text-sm text-gray-600 mt-1">Silakan coba lagi</p>
-                </div>
-              )}
-
-              {/* Payment Buttons */}
-              {paymentStatus !== "processing" && (
-                <div className="grid grid-cols-2 gap-4">
-                  <Button
-                    onClick={() => handlePayment(true)}
-                    className="bg-emerald-600 hover:bg-emerald-700 text-white py-6"
-                  >
-                    Simulate Success
-                  </Button>
-                  <Button
-                    onClick={() => handlePayment(false)}
-                    variant="outline"
-                    className="border-red-300 text-red-600 hover:bg-red-50 py-6"
-                  >
-                    Simulate Failed
-                  </Button>
-                </div>
-              )}
-
-              <Button variant="ghost" onClick={() => setStep(2)} className="w-full text-gray-600 hover:text-gray-900">
-                Kembali ke Jadwal
-              </Button>
             </CardContent>
           </Card>
         )}
@@ -439,6 +595,15 @@ function BookingContent() {
                       {booking.paymentStatus === "paid" ? "Lunas" : "DP 50%"}
                     </Badge>
                   </div>
+                  {booking.paymentType && (
+                    <div className="flex justify-between">
+                      <span className="text-gray-500">Metode Pembayaran</span>
+                      <span className="text-gray-900 font-medium">
+                        {PAYMENT_TYPES.find(t => t.id === booking.paymentType)?.name} 
+                        {booking.paymentDetail && ` - ${booking.paymentDetail}`}
+                      </span>
+                    </div>
+                  )}
                   <div className="flex justify-between">
                     <span className="text-gray-500">Total Dibayar</span>
                     <span className="text-emerald-600 font-bold">{formatCurrency(booking.totalPrice)}</span>

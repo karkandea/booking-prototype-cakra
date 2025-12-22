@@ -16,6 +16,8 @@ export interface TimeSlot {
   available: boolean;
 }
 
+export type PaymentType = "va" | "qris" | "ewallet" | "retail" | "card";
+
 export interface Booking {
   id: string;
   fieldId: string;
@@ -28,6 +30,8 @@ export interface Booking {
   totalPrice: number;
   paymentStatus: "paid" | "partial" | "pending" | "failed";
   paymentMethod: "full" | "dp";
+  paymentType?: PaymentType;
+  paymentDetail?: string; // e.g., "BCA", "GoPay", etc.
   createdAt: string;
   barcode: string;
 }
