@@ -45,11 +45,7 @@ export default function Home() {
                   <ChevronRight className="ml-2 w-5 h-5" />
                 </Button>
               </Link>
-              <Link href="/owner">
-                <Button variant="outline" size="lg" className="border-gray-300 text-gray-700 hover:bg-gray-100 hover:text-gray-900 px-8 py-6 text-lg rounded-xl">
-                  Owner Dashboard
-                </Button>
-              </Link>
+
             </div>
           </div>
           

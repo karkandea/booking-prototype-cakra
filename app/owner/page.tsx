@@ -11,7 +11,6 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { dummyBookings, fields, formatCurrency } from "@/lib/data";
 import { Booking } from "@/lib/types";
-import { QRCodeGenerator } from "@/components/QRCodeGenerator";
 
 export default function OwnerDashboard() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -248,23 +247,22 @@ export default function OwnerDashboard() {
                   </div>
                 </div>
 
-                {/* QR Code */}
+                {/* Barcode */}
                 <div className="p-6 rounded-lg bg-white border border-gray-200">
                   <div className="flex flex-col items-center">
-                    <QRCodeGenerator 
-                      value={JSON.stringify({
-                        bookingId: selectedBooking.id,
-                        barcode: selectedBooking.barcode,
-                        field: getField(selectedBooking.fieldId)?.name,
-                        date: selectedBooking.date,
-                        time: selectedBooking.time,
-                        duration: selectedBooking.duration,
-                        userName: selectedBooking.userName,
-                      })}
-                      size={150}
-                    />
-                    <p className="text-gray-900 font-mono text-sm mt-3">{selectedBooking.id}</p>
-                    <p className="text-gray-500 text-xs mt-1">Scan untuk verifikasi</p>
+                    <div className="flex items-end space-x-0.5 h-16">
+                      {Array.from({ length: 40 }).map((_, i) => (
+                        <div
+                          key={i}
+                          className="bg-gray-900"
+                          style={{
+                            width: Math.random() > 0.5 ? "3px" : "1px",
+                            height: `${50 + Math.random() * 30}%`,
+                          }}
+                        />
+                      ))}
+                    </div>
+                    <p className="text-gray-900 font-mono text-sm mt-2">{selectedBooking.barcode}</p>
                   </div>
                 </div>
 
