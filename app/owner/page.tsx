@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Search, Calendar, User, CreditCard, Eye, CheckCircle, Clock, AlertCircle } from "lucide-react";
+import { ArrowLeft, Search, Calendar, User, CreditCard, Eye, CheckCircle, Clock, AlertCircle, RefreshCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -338,6 +338,20 @@ export default function OwnerDashboard() {
                     <p className="text-gray-900 font-mono text-sm mt-2">{selectedBooking.barcode}</p>
                   </div>
                 </div>
+
+                {selectedBooking.paymentStatus === "paid" && (
+                  <Button 
+                    variant="outline" 
+                    className="w-full border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 h-12 rounded-xl flex items-center justify-center gap-2"
+                    onClick={() => {
+                      alert(`Refund simulated for ${selectedBooking.id}. Status would update to 'refunded' in production.`);
+                      setDialogOpen(false);
+                    }}
+                  >
+                    <RefreshCcw className="w-4 h-4" />
+                    Simulasi Refund (System Admin)
+                  </Button>
+                )}
 
                 <p className="text-xs text-gray-500 text-center">
                   Booking dibuat: {new Date(selectedBooking.createdAt).toLocaleString("id-ID")}

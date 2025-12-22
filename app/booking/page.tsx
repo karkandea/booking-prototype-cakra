@@ -3,7 +3,7 @@
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, User, Calendar, CreditCard, CheckCircle, Loader2, Building, QrCode, Wallet, Store, ChevronRight, Info, Download, Share2, Printer } from "lucide-react";
+import { ArrowLeft, User, Calendar, CreditCard, CheckCircle, Loader2, Building, QrCode, Wallet, Store, ChevronRight, Info, Download, Share2, Printer, Copy, Check, Tag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -44,6 +44,9 @@ function BookingContent() {
   const [paymentMethod, setPaymentMethod] = useState<"full" | "dp">("full");
   const [selectedPaymentType, setSelectedPaymentType] = useState<PaymentType | null>(null);
   const [selectedPaymentDetail, setSelectedPaymentDetail] = useState<string | null>(null);
+  const [voucherCode, setVoucherCode] = useState("");
+  const [isVoucherApplied, setIsVoucherApplied] = useState(false);
+  const [copied, setCopied] = useState<string | null>(null);
   const [paymentStatus, setPaymentStatus] = useState<"idle" | "processing" | "success" | "failed" | "simulating">("idle");
   const [booking, setBooking] = useState<Booking | null>(null);
   const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
@@ -111,8 +114,25 @@ function BookingContent() {
     }, 1500);
   };
 
-  const totalPrice = selectedField.pricePerHour * scheduleData.duration;
+  const basePrice = selectedField.pricePerHour * scheduleData.duration;
+  const discount = isVoucherApplied ? basePrice * 0.2 : 0; // 20% discount
+  const totalPrice = basePrice - discount;
   const payAmount = paymentMethod === "dp" ? totalPrice * 0.5 : totalPrice;
+
+  const handleApplyVoucher = () => {
+    if (voucherCode.toUpperCase() === "PROMO20") {
+      setIsVoucherApplied(true);
+      setErrors({ ...errors, voucher: "" });
+    } else {
+      setErrors({ ...errors, voucher: "Kode voucher tidak valid" });
+    }
+  };
+
+  const handleCopy = (text: string, id: string) => {
+    navigator.clipboard.writeText(text);
+    setCopied(id);
+    setTimeout(() => setCopied(null), 2000);
+  };
 
   const steps = [
     { num: 1, label: "Data Diri", icon: User },
@@ -371,6 +391,35 @@ function BookingContent() {
                     </div>
                   </div>
 
+                  {/* Voucher Code */}
+                  <div className="mb-8 p-4 rounded-xl border border-dashed border-gray-300 bg-gray-50/50">
+                    <Label className="text-gray-700 mb-3 block text-xs font-bold uppercase tracking-wider">Punya Kode Promo?</Label>
+                    <div className="flex gap-2">
+                      <div className="relative flex-1">
+                        <Tag className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                        <Input 
+                          placeholder="Masukkan kode (e.g. PROMO20)" 
+                          className="pl-9 bg-white border-gray-200"
+                          value={voucherCode}
+                          onChange={(e) => setVoucherCode(e.target.value)}
+                          disabled={isVoucherApplied}
+                        />
+                      </div>
+                      <Button 
+                        variant={isVoucherApplied ? "secondary" : "default"}
+                        onClick={handleApplyVoucher}
+                        disabled={isVoucherApplied}
+                        className={isVoucherApplied ? "bg-emerald-100 text-emerald-700" : "bg-gray-900 text-white"}
+                      >
+                        {isVoucherApplied ? "Applied" : "Apply"}
+                      </Button>
+                    </div>
+                    {errors.voucher && <p className="text-red-500 text-[10px] mt-1 font-medium">{errors.voucher}</p>}
+                    {isVoucherApplied && (
+                      <p className="text-emerald-600 text-[10px] mt-1 font-bold">✓ Voucher PROMO20 berhasil dipasang! (Diskon 20%)</p>
+                    )}
+                  </div>
+
                   <Label className="text-gray-700 mb-3 block font-semibold">Pilih Metode Pembayaran</Label>
                   <div className="space-y-3">
                     {PAYMENT_TYPES.map((type) => (
@@ -453,9 +502,20 @@ function BookingContent() {
                     {selectedPaymentType === "va" && (
                       <div className="space-y-4 w-full">
                         <div className="text-xs text-gray-500 font-bold uppercase tracking-widest">Nomor Virtual Account</div>
-                        <div className="text-2xl font-mono font-bold text-gray-900 tracking-wider">8801 {Math.floor(1000 + Math.random() * 9000)} {Math.floor(1000 + Math.random() * 9000)}</div>
+                        <div className="flex flex-col items-center">
+                          <div className="text-2xl font-mono font-bold text-gray-900 tracking-wider">8801 1234 5678</div>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            onClick={() => handleCopy("880112345678", "va")}
+                            className="mt-2 text-emerald-600 hover:bg-emerald-50 h-8"
+                          >
+                            {copied === "va" ? <Check className="w-3 h-3 mr-1" /> : <Copy className="w-3 h-3 mr-1" />}
+                            {copied === "va" ? "Copied" : "Copy VA Number"}
+                          </Button>
+                        </div>
                         <div className="pt-4 border-t border-gray-200">
-                          <p className="text-sm text-gray-600">Silakan transfer sesuai nominal ke nomor VA di atas</p>
+                          <p className="text-sm text-gray-600">Terpotong diskon jika menggunakan voucher</p>
                         </div>
                       </div>
                     )}
@@ -487,7 +547,18 @@ function BookingContent() {
                     {selectedPaymentType === "retail" && (
                       <div className="space-y-4 w-full">
                         <div className="text-xs text-gray-500 font-bold uppercase tracking-widest">Kode Pembayaran</div>
-                        <div className="text-2xl font-mono font-bold text-gray-900 tracking-wider">PRTY-{Math.floor(100000 + Math.random() * 900000)}</div>
+                        <div className="flex flex-col items-center">
+                          <div className="text-2xl font-mono font-bold text-gray-900 tracking-wider">PRTY-998877</div>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            onClick={() => handleCopy("PRTY-998877", "retail")}
+                            className="mt-2 text-emerald-600 hover:bg-emerald-50 h-8"
+                          >
+                            {copied === "retail" ? <Check className="w-3 h-3 mr-1" /> : <Copy className="w-3 h-3 mr-1" />}
+                            {copied === "retail" ? "Copied" : "Copy Code"}
+                          </Button>
+                        </div>
                         <div className="pt-4 border-t border-gray-200">
                           <p className="text-sm text-gray-600">Tunjukkan kode ini ke kasir {selectedPaymentDetail}</p>
                         </div>
