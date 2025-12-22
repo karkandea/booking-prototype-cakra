@@ -3,7 +3,7 @@
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, User, Calendar, CreditCard, CheckCircle, Loader2, Building, QrCode, Wallet, Store, ChevronRight, Info } from "lucide-react";
+import { ArrowLeft, User, Calendar, CreditCard, CheckCircle, Loader2, Building, QrCode, Wallet, Store, ChevronRight, Info, Download, Share2, Printer } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -645,8 +645,23 @@ function BookingContent() {
                 </div>
               </div>
 
-              <p className="text-sm text-gray-500 mb-6">
-                Email konfirmasi telah dikirim ke {booking.userEmail}
+              <div className="grid grid-cols-3 gap-3 mb-8">
+                <Button variant="outline" size="sm" onClick={() => alert("Receipt downloaded! (Simulation)")} className="flex flex-col h-auto py-3 gap-1 border-gray-200">
+                  <Download className="w-4 h-4 text-emerald-600" />
+                  <span className="text-[10px] text-gray-500 font-medium">Download</span>
+                </Button>
+                <Button variant="outline" size="sm" onClick={() => alert("Shareable link copied! (Simulation)")} className="flex flex-col h-auto py-3 gap-1 border-gray-200">
+                  <Share2 className="w-4 h-4 text-emerald-600" />
+                  <span className="text-[10px] text-gray-500 font-medium">Share</span>
+                </Button>
+                <Button variant="outline" size="sm" onClick={() => window.print()} className="flex flex-col h-auto py-3 gap-1 border-gray-200">
+                  <Printer className="w-4 h-4 text-emerald-600" />
+                  <span className="text-[10px] text-gray-500 font-medium">Print</span>
+                </Button>
+              </div>
+
+              <p className="text-sm text-gray-500 mb-6 font-medium">
+                Email konfirmasi telah dikirim ke <span className="text-gray-900">{booking.userEmail}</span>
               </p>
 
               <div className="flex gap-4">

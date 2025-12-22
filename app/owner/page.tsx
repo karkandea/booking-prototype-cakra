@@ -11,6 +11,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { dummyBookings, fields, formatCurrency } from "@/lib/data";
 import { Booking } from "@/lib/types";
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from "recharts";
 
 export default function OwnerDashboard() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -44,6 +45,16 @@ export default function OwnerDashboard() {
     pending: dummyBookings.filter((b) => b.paymentStatus === "pending" || b.paymentStatus === "partial").length,
     revenue: dummyBookings.filter((b) => b.paymentStatus === "paid").reduce((acc, b) => acc + b.totalPrice, 0),
   };
+
+  const paymentData = [
+    { name: "VA", value: dummyBookings.filter(b => b.paymentType === "va").length },
+    { name: "QRIS", value: dummyBookings.filter(b => b.paymentType === "qris").length },
+    { name: "E-Wallet", value: dummyBookings.filter(b => b.paymentType === "ewallet").length },
+    { name: "Retail", value: dummyBookings.filter(b => b.paymentType === "retail").length },
+    { name: "Card", value: dummyBookings.filter(b => b.paymentType === "card").length },
+  ].filter(d => d.value > 0);
+
+  const COLORS = ["#10b981", "#3b82f6", "#f59e0b", "#ef4444", "#8b5cf6"];
 
   const handleViewBooking = (booking: Booking) => {
     setSelectedBooking(booking);
@@ -89,6 +100,60 @@ export default function OwnerDashboard() {
             <CardContent className="pt-6">
               <div className="text-2xl font-bold text-emerald-600">{formatCurrency(stats.revenue)}</div>
               <p className="text-gray-500 text-sm">Total Revenue</p>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Analytics & Distribution */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          <Card className="lg:col-span-1 bg-white border-gray-200 shadow-sm">
+            <CardHeader>
+              <CardTitle className="text-sm font-semibold text-gray-700">Metode Pembayaran</CardTitle>
+            </CardHeader>
+            <CardContent className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={paymentData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={60}
+                    outerRadius={80}
+                    paddingAngle={5}
+                    dataKey="value"
+                  >
+                    {paymentData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip 
+                    contentStyle={{ backgroundColor: "#fff", border: "1px solid #e2e8f0", borderRadius: "8px" }}
+                    itemStyle={{ fontSize: "12px", fontWeight: "bold" }}
+                  />
+                  <Legend verticalAlign="bottom" height={36} iconType="circle" wrapperStyle={{ fontSize: "10px" }} />
+                </PieChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+          
+          <Card className="lg:col-span-2 bg-white border-gray-200 shadow-sm overflow-hidden">
+            <CardHeader className="bg-emerald-600/5 border-b border-emerald-100">
+              <CardTitle className="text-sm font-semibold text-emerald-800">Quick Growth Insight</CardTitle>
+            </CardHeader>
+            <CardContent className="pt-6">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center">
+                  <CheckCircle className="w-6 h-6 text-emerald-600" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-gray-900">Pembayaran Stabil</h4>
+                  <p className="text-sm text-gray-500">Revenue meningkat 12% dibanding minggu lalu. QRIS menjadi metode terpopuler.</p>
+                </div>
+              </div>
+              <div className="mt-6 flex gap-2">
+                <Badge variant="outline" className="text-[10px] border-emerald-200 text-emerald-700 bg-emerald-50">#HighConversion</Badge>
+                <Badge variant="outline" className="text-[10px] border-blue-200 text-blue-700 bg-blue-50">#PrototypeDemo</Badge>
+              </div>
             </CardContent>
           </Card>
         </div>
