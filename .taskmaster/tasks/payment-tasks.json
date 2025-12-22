@@ -92,7 +92,7 @@
         "details": "Implement a 'Copy' button next to VA numbers (Bank Transfer) and Payment Codes (Retail) with a 'Copied!' toast or feedback.",
         "testStrategy": "Verify that clicking copy correctly captures the string and provides UI feedback.",
         "priority": "low",
-        "status": "pending",
+        "status": "done",
         "subtasks": [],
         "updatedAt": "2025-12-22T21:20:00.000Z"
       },
@@ -103,7 +103,7 @@
         "details": "In the Owner Dashboard's booking detail, add a 'Simulate Refund' button that updates the payment status to 'failed' or a new 'refunded' state.",
         "testStrategy": "Verify that refunding a booking updates the UI and stats correctly.",
         "priority": "low",
-        "status": "pending",
+        "status": "done",
         "subtasks": [],
         "updatedAt": "2025-12-22T21:20:00.000Z"
       },
@@ -114,17 +114,39 @@
         "details": "Allow users to input a dummy code (e.g., 'PROMO20') to simulate a price reduction during the payment selection step.",
         "testStrategy": "Verify that entering a valid code reduces the total amount in the UI.",
         "priority": "low",
-        "status": "pending",
+        "status": "done",
         "subtasks": [],
         "updatedAt": "2025-12-22T21:20:00.000Z"
+      },
+      {
+        "id": "P11",
+        "title": "Transaction Fee & Tax Calculation",
+        "description": "Add simulated fees and taxes to the final amount.",
+        "details": "Include a small transaction fee (e.g., Rp 4.500) and tax (e.g., 11%) to the payment breakdown to make it realistic.",
+        "testStrategy": "Verify the Math logic and display in the payment selection step.",
+        "priority": "low",
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-12-22T21:30:00.000Z"
+      },
+      {
+        "id": "P12",
+        "title": "Payment Status Checker Simulation",
+        "description": "Add a 'Check Status' button for pending payments.",
+        "details": "For VA and Retail payments, add a 'Cek Status Pembayaran' button that shows a loader and then confirms the payment.",
+        "testStrategy": "Verify the button appears for relevant methods and triggers the success flow.",
+        "priority": "low",
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-12-22T21:30:00.000Z"
       }
     ],
     "metadata": {
-      "version": "1.1.0",
-      "lastModified": "2025-12-22T21:20:00.000Z",
-      "taskCount": 10,
-      "completedCount": 7,
-      "tags": ["payment", "dummy", "xendit", "premium"]
+      "version": "1.2.0",
+      "lastModified": "2025-12-22T21:30:00.000Z",
+      "taskCount": 12,
+      "completedCount": 12,
+      "tags": ["payment", "dummy", "xendit", "premium", "pro"]
     }
   }
 }

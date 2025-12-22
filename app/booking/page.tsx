@@ -115,9 +115,21 @@ function BookingContent() {
   };
 
   const basePrice = selectedField.pricePerHour * scheduleData.duration;
-  const discount = isVoucherApplied ? basePrice * 0.2 : 0; // 20% discount
-  const totalPrice = basePrice - discount;
+  const discount = isVoucherApplied ? basePrice * 0.2 : 0;
+  const serviceFee = 4500;
+  const tax = (basePrice - discount) * 0.11;
+  const totalPrice = basePrice - discount + serviceFee + tax;
   const payAmount = paymentMethod === "dp" ? totalPrice * 0.5 : totalPrice;
+
+  const [isCheckingStatus, setIsCheckingStatus] = useState(false);
+
+  const handleCheckStatus = () => {
+    setIsCheckingStatus(true);
+    setTimeout(() => {
+      setIsCheckingStatus(false);
+      handlePayment(true);
+    }, 2000);
+  };
 
   const handleApplyVoucher = () => {
     if (voucherCode.toUpperCase() === "PROMO20") {
@@ -312,13 +324,27 @@ function BookingContent() {
                   </Select>
                 </div>
 
-                <div className="p-4 rounded-lg bg-gray-50 border border-gray-200">
-                  <div className="flex justify-between text-sm text-gray-600 mb-2">
-                    <span>Harga per jam</span>
-                    <span>{formatCurrency(selectedField.pricePerHour)}</span>
+                <div className="p-4 rounded-lg bg-gray-50 border border-gray-200 space-y-2">
+                  <div className="flex justify-between text-sm text-gray-600">
+                    <span>Harga Sewa ({scheduleData.duration} jam)</span>
+                    <span>{formatCurrency(basePrice)}</span>
                   </div>
-                  <div className="flex justify-between text-lg font-bold text-gray-900">
-                    <span>Total</span>
+                  {isVoucherApplied && (
+                    <div className="flex justify-between text-sm text-emerald-600">
+                      <span>Voucher PROMO20 (20%)</span>
+                      <span>-{formatCurrency(discount)}</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between text-sm text-gray-600">
+                    <span>Biaya Layanan</span>
+                    <span>{formatCurrency(serviceFee)}</span>
+                  </div>
+                  <div className="flex justify-between text-sm text-gray-600 border-b border-gray-200 pb-2">
+                    <span>Pajak (11%)</span>
+                    <span>{formatCurrency(tax)}</span>
+                  </div>
+                  <div className="flex justify-between text-lg font-bold text-gray-900 pt-1">
+                    <span>Total Tagihan</span>
                     <span className="text-emerald-600">{formatCurrency(totalPrice)}</span>
                   </div>
                 </div>
@@ -514,8 +540,22 @@ function BookingContent() {
                             {copied === "va" ? "Copied" : "Copy VA Number"}
                           </Button>
                         </div>
-                        <div className="pt-4 border-t border-gray-200">
-                          <p className="text-sm text-gray-600">Terpotong diskon jika menggunakan voucher</p>
+                        <div className="pt-4 border-t border-gray-200 space-y-3">
+                          <p className="text-[10px] text-gray-500 text-center">Terpotong diskon & sudah termasuk biaya layanan</p>
+                          <Button 
+                            className="w-full bg-blue-600 hover:bg-blue-700 text-white h-10 text-xs"
+                            onClick={handleCheckStatus}
+                            disabled={isCheckingStatus}
+                          >
+                            {isCheckingStatus ? (
+                              <>
+                                <Loader2 className="w-3 h-3 mr-2 animate-spin" />
+                                Mengecek Pembayaran...
+                              </>
+                            ) : (
+                              "Cek Status Pembayaran"
+                            )}
+                          </Button>
                         </div>
                       </div>
                     )}
@@ -559,8 +599,22 @@ function BookingContent() {
                             {copied === "retail" ? "Copied" : "Copy Code"}
                           </Button>
                         </div>
-                        <div className="pt-4 border-t border-gray-200">
-                          <p className="text-sm text-gray-600">Tunjukkan kode ini ke kasir {selectedPaymentDetail}</p>
+                        <div className="pt-4 border-t border-gray-200 space-y-3">
+                          <p className="text-[10px] text-gray-500 text-center">Tunjukkan kode ini ke kasir {selectedPaymentDetail}</p>
+                          <Button 
+                            className="w-full bg-blue-600 hover:bg-blue-700 text-white h-10 text-xs"
+                            onClick={handleCheckStatus}
+                            disabled={isCheckingStatus}
+                          >
+                            {isCheckingStatus ? (
+                              <>
+                                <Loader2 className="w-3 h-3 mr-2 animate-spin" />
+                                Mengecek Pembayaran...
+                              </>
+                            ) : (
+                              "Cek Status Pembayaran"
+                            )}
+                          </Button>
                         </div>
                       </div>
                     )}
@@ -690,8 +744,22 @@ function BookingContent() {
                     </div>
                   )}
                   <div className="flex justify-between">
+                    <span className="text-gray-500">Biaya Sewa</span>
+                    <span className="text-gray-900 font-medium">{formatCurrency(basePrice)}</span>
+                  </div>
+                  {isVoucherApplied && (
+                    <div className="flex justify-between">
+                      <span className="text-emerald-600">Diskon</span>
+                      <span className="text-emerald-600 font-medium">-{formatCurrency(discount)}</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">Biaya Layanan & Pajak</span>
+                    <span className="text-gray-900 font-medium">{formatCurrency(serviceFee + tax)}</span>
+                  </div>
+                  <div className="flex justify-between border-t border-gray-100 pt-2">
                     <span className="text-gray-500">Total Dibayar</span>
-                    <span className="text-emerald-600 font-bold">{formatCurrency(booking.totalPrice)}</span>
+                    <span className="text-emerald-600 font-bold text-lg">{formatCurrency(totalPrice)}</span>
                   </div>
                 </div>
               </div>
