@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useEffect, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, User, Calendar, CreditCard, CheckCircle, Loader2, Building, QrCode, Wallet, Store, ChevronRight, Info, Download, Share2, Printer, Copy, Check, Tag } from "lucide-react";
+import { ArrowLeft, User, Calendar, CreditCard, CheckCircle, Loader2, Building, QrCode, Wallet, Store, ChevronRight, Info, Download, Share2, Printer, Copy, Check, Tag, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -12,6 +12,16 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { 
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { fields, generateTimeSlots, formatCurrency, generateBookingId } from "@/lib/data";
 import { BookingFormData, ScheduleData, Booking, TimeSlot, PaymentType } from "@/lib/types";
 import { QRCodeGenerator } from "@/components/QRCodeGenerator";
@@ -30,10 +40,12 @@ const RETAIL_OUTLETS = ["Alfamart", "Indomaret"];
 const CARD_TYPES = ["Visa", "Mastercard"];
 
 function BookingContent() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const fieldParam = searchParams.get("field");
   
   const [step, setStep] = useState(1);
+  const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
   const [formData, setFormData] = useState<BookingFormData>({ name: "", email: "", phone: "" });
   const [scheduleData, setScheduleData] = useState<ScheduleData>({
     fieldId: fieldParam || fields[0].id,
@@ -146,6 +158,18 @@ function BookingContent() {
     setTimeout(() => setCopied(null), 2000);
   };
 
+  const handleBack = () => {
+    if (step === 3 && selectedPaymentDetail) {
+      setSelectedPaymentDetail(null);
+    } else if (step === 3 && selectedPaymentType) {
+      setSelectedPaymentType(null);
+    } else if (step > 1) {
+      setStep(step - 1);
+    } else {
+      router.push("/");
+    }
+  };
+
   const steps = [
     { num: 1, label: "Data Diri", icon: User },
     { num: 2, label: "Jadwal", icon: Calendar },
@@ -158,12 +182,10 @@ function BookingContent() {
       <div className="max-w-4xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
-          <Link href="/">
-            <Button variant="ghost" className="text-gray-600 hover:text-gray-900 mb-4">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Kembali
-            </Button>
-          </Link>
+          <Button variant="ghost" className="text-gray-600 hover:text-gray-900 mb-4" onClick={handleBack}>
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Kembali
+          </Button>
           <h1 className="text-3xl font-bold text-gray-900">Booking Lapangan</h1>
           <p className="text-gray-600">{selectedField.name}</p>
         </div>
@@ -223,15 +245,21 @@ function BookingContent() {
                 <Input
                   id="phone"
                   value={formData.phone}
-                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value.replace(/[^0-9]/g, "") })}
                   className="bg-white border-gray-300 text-gray-900 mt-1"
                   placeholder="081234567890"
                 />
                 {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone}</p>}
               </div>
-              <Button onClick={handleNext} className="w-full bg-emerald-600 hover:bg-emerald-700 text-white">
-                Lanjut ke Jadwal
-              </Button>
+              <div className="flex gap-2">
+                <Button variant="outline" onClick={() => setIsCancelDialogOpen(true)} className="flex-1 border-gray-300 text-gray-700 hover:bg-gray-100 flex items-center justify-center gap-2">
+                  <XCircle className="w-4 h-4" />
+                  Batal Booking
+                </Button>
+                <Button onClick={handleNext} className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white">
+                  Lanjut ke Jadwal
+                </Button>
+              </div>
             </CardContent>
           </Card>
         )}
@@ -350,8 +378,9 @@ function BookingContent() {
                 </div>
 
                 <div className="flex gap-2">
-                  <Button variant="outline" onClick={() => setStep(1)} className="flex-1 border-gray-300 text-gray-700 hover:bg-gray-100">
-                    Kembali
+                  <Button variant="outline" onClick={() => setIsCancelDialogOpen(true)} className="flex-1 border-gray-300 text-gray-700 hover:bg-gray-100 flex items-center justify-center gap-2">
+                    <XCircle className="w-4 h-4" />
+                    Batal Booking
                   </Button>
                   <Button onClick={handleNext} className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white">
                     Lanjut ke Pembayaran
@@ -470,9 +499,9 @@ function BookingContent() {
                   </div>
 
                   <div className="mt-8 pt-6 border-t border-gray-100">
-                    <Button variant="ghost" onClick={() => setStep(2)} className="w-full text-gray-500 hover:text-gray-900 flex items-center justify-center gap-2">
-                      <ArrowLeft className="w-4 h-4" />
-                      Kembali ke Jadwal
+                    <Button variant="ghost" onClick={() => setIsCancelDialogOpen(true)} className="w-full text-red-500 hover:text-red-600 hover:bg-red-50 flex items-center justify-center gap-2">
+                      <XCircle className="w-4 h-4" />
+                      Batal Booking
                     </Button>
                   </div>
                 </div>
@@ -819,6 +848,26 @@ function BookingContent() {
           </Card>
         )}
       </div>
+
+      <AlertDialog open={isCancelDialogOpen} onOpenChange={setIsCancelDialogOpen}>
+        <AlertDialogContent className="bg-white border-gray-200">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-gray-900">Batalkan Booking?</AlertDialogTitle>
+            <AlertDialogDescription className="text-gray-500">
+              Semua data yang sudah Anda masukkan akan terhapus. Apakah Anda yakin ingin membatalkan booking ini?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="border-gray-300 text-gray-700 hover:bg-gray-100">Kembali</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={() => router.push("/")}
+              className="bg-red-600 hover:bg-red-700 text-white"
+            >
+              Ya, Batalkan
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
