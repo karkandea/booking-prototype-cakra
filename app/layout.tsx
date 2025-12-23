@@ -17,6 +17,8 @@ export const metadata: Metadata = {
   description: "Platform booking lapangan olahraga terpercaya. Pilih jadwal, bayar online, dan main tanpa ribet.",
 };
 
+import { ThemeProvider } from "@/context/ThemeContext";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -27,7 +29,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <ThemeProvider>
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

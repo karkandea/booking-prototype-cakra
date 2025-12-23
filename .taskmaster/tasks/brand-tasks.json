@@ -1,0 +1,73 @@
+{
+  "brand": {
+    "tasks": [
+      {
+        "id": "B1",
+        "title": "Implement /owner/settings page",
+        "description": "Create a settings page for the owner to adjust brand colors.",
+        "details": "Include color pickers for Primary, Secondary, Accent, Background, and Text colors. Add 'Save' and 'Reset' buttons.",
+        "testStrategy": "Verify that color pickers are functional and change local state.",
+        "priority": "high",
+        "dependencies": [],
+        "status": "pending",
+        "subtasks": [],
+        "updatedAt": "2025-12-23T18:45:00.000Z"
+      },
+      {
+        "id": "B2",
+        "title": "Create Centralized Theme Context",
+        "description": "Implement a React context to manage and provide theme colors.",
+        "details": "Use CSS variables in the root to apply colors globally. Persist theme to localStorage.",
+        "testStrategy": "Verify that changing context state updates the applied CSS variables.",
+        "priority": "high",
+        "dependencies": ["B1"],
+        "status": "pending",
+        "subtasks": [],
+        "updatedAt": "2025-12-23T18:45:00.000Z"
+      },
+      {
+        "id": "B3",
+        "title": "Apply Theme to Homepage",
+        "description": "Update the homepage to use brand theme variables.",
+        "details": "Replace hardcoded colors (like emerald-600) with CSS variables defined in the ThemeContext.",
+        "testStrategy": "Change color in settings and verify homepage updates immediately.",
+        "priority": "medium",
+        "dependencies": ["B2"],
+        "status": "pending",
+        "subtasks": [],
+        "updatedAt": "2025-12-23T18:45:00.000Z"
+      },
+      {
+        "id": "B4",
+        "title": "Apply Theme to Booking Flow",
+        "description": "Update all steps of the booking flow to respect the brand theme.",
+        "details": "Apply theme colors to step indicators, buttons, and progress bars in the booking flow.",
+        "testStrategy": "Navigate through booking flow and verify theme consistency.",
+        "priority": "medium",
+        "dependencies": ["B2"],
+        "status": "pending",
+        "subtasks": [],
+        "updatedAt": "2025-12-23T18:45:00.000Z"
+      },
+      {
+        "id": "B5",
+        "title": "Apply Theme to Confirmation & Receipt",
+        "description": "Ensure the success page and receipt simulation use brand colors.",
+        "details": "Updates icons, badges, and headers on the confirmation screen.",
+        "testStrategy": "Complete a booking and verify the success screen matches the brand colors.",
+        "priority": "low",
+        "dependencies": ["B2"],
+        "status": "pending",
+        "subtasks": [],
+        "updatedAt": "2025-12-23T18:45:00.000Z"
+      }
+    ],
+    "metadata": {
+      "version": "1.0.0",
+      "lastModified": "2025-12-23T18:45:00.000Z",
+      "taskCount": 5,
+      "completedCount": 0,
+      "tags": ["brand", "theme", "customization", "white-label"]
+    }
+  }
+}

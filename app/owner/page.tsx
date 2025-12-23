@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Search, Calendar, User, CreditCard, Eye, CheckCircle, Clock, AlertCircle, RefreshCcw } from "lucide-react";
+import { ArrowLeft, Search, Calendar, User, CreditCard, Eye, CheckCircle, Clock, AlertCircle, RefreshCcw, Layout } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -72,8 +72,18 @@ export default function OwnerDashboard() {
               Kembali ke Home
             </Button>
           </Link>
-          <h1 className="text-3xl font-bold text-gray-900">Owner Dashboard</h1>
-          <p className="text-gray-600">Kelola booking dan lihat status pembayaran</p>
+          <div className="flex justify-between items-start">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">Owner Dashboard</h1>
+              <p className="text-gray-600">Kelola booking dan lihat status pembayaran</p>
+            </div>
+            <Link href="/owner/settings">
+              <Button variant="outline" className="border-emerald-200 text-emerald-700 hover:bg-emerald-50">
+                <Layout className="w-4 h-4 mr-2" />
+                Brand Settings
+              </Button>
+            </Link>
+          </div>
         </div>
 
         {/* Stats Cards */}

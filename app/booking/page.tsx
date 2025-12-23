@@ -25,6 +25,7 @@ import {
 import { fields, generateTimeSlots, formatCurrency, generateBookingId } from "@/lib/data";
 import { BookingFormData, ScheduleData, Booking, TimeSlot, PaymentType } from "@/lib/types";
 import { QRCodeGenerator } from "@/components/QRCodeGenerator";
+import { useTheme } from "@/context/ThemeContext";
 
 const PAYMENT_TYPES = [
   { id: "va", name: "Virtual Account", icon: Building, description: "BCA, BNI, BRI, Mandiri, Permata, CIMB" },
@@ -40,6 +41,7 @@ const RETAIL_OUTLETS = ["Alfamart", "Indomaret"];
 const CARD_TYPES = ["Visa", "Mastercard"];
 
 function BookingContent() {
+  const { theme } = useTheme();
   const router = useRouter();
   const searchParams = useSearchParams();
   const fieldParam = searchParams.get("field");
@@ -194,16 +196,19 @@ function BookingContent() {
         <div className="flex items-center justify-between mb-8">
           {steps.map((s, i) => (
             <div key={s.num} className="flex items-center">
-              <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all ${
-                step >= s.num ? "bg-emerald-600 border-emerald-600" : "border-gray-300 bg-white"
-              }`}>
+              <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all`} style={{ 
+                backgroundColor: step >= s.num ? theme.primary : 'white',
+                borderColor: step >= s.num ? theme.primary : '#d1d5db'
+              }}>
                 <s.icon className={`w-5 h-5 ${step >= s.num ? "text-white" : "text-gray-400"}`} />
               </div>
               <span className={`hidden sm:block ml-2 text-sm ${step >= s.num ? "text-gray-900 font-medium" : "text-gray-500"}`}>
                 {s.label}
               </span>
               {i < steps.length - 1 && (
-                <div className={`w-8 sm:w-16 h-0.5 mx-2 ${step > s.num ? "bg-emerald-600" : "bg-gray-300"}`} />
+                <div className={`w-8 sm:w-16 h-0.5 mx-2`} style={{ 
+                  backgroundColor: step > s.num ? theme.primary : '#d1d5db'
+                }} />
               )}
             </div>
           ))}
@@ -256,7 +261,7 @@ function BookingContent() {
                   <XCircle className="w-4 h-4" />
                   Batal Booking
                 </Button>
-                <Button onClick={handleNext} className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white">
+                <Button onClick={handleNext} className="flex-1 text-white" style={{ backgroundColor: theme.primary }}>
                   Lanjut ke Jadwal
                 </Button>
               </div>
@@ -317,13 +322,8 @@ function BookingContent() {
                           variant={scheduleData.time === slot.time ? "default" : "outline"}
                           disabled={!slot.available}
                           onClick={() => setScheduleData({ ...scheduleData, time: slot.time })}
-                          className={`text-sm ${
-                            scheduleData.time === slot.time
-                              ? "bg-emerald-600 hover:bg-emerald-700 text-white"
-                              : slot.available
-                              ? "border-gray-300 text-gray-700 hover:bg-gray-100"
-                              : "border-gray-200 text-gray-400 cursor-not-allowed"
-                          }`}
+                          className={`text-sm transition-all`}
+                          style={scheduleData.time === slot.time ? { backgroundColor: theme.primary, color: 'white' } : {}}
                         >
                           {slot.time}
                         </Button>
@@ -373,7 +373,7 @@ function BookingContent() {
                   </div>
                   <div className="flex justify-between text-lg font-bold text-gray-900 pt-1">
                     <span>Total Tagihan</span>
-                    <span className="text-emerald-600">{formatCurrency(totalPrice)}</span>
+                    <span style={{ color: theme.primary }}>{formatCurrency(totalPrice)}</span>
                   </div>
                 </div>
 
@@ -382,7 +382,7 @@ function BookingContent() {
                     <XCircle className="w-4 h-4" />
                     Batal Booking
                   </Button>
-                  <Button onClick={handleNext} className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white">
+                  <Button onClick={handleNext} className="flex-1 text-white" style={{ backgroundColor: theme.primary }}>
                     Lanjut ke Pembayaran
                   </Button>
                 </div>
@@ -402,7 +402,7 @@ function BookingContent() {
                 </div>
                 <div className="text-right">
                   <div className="text-xs text-gray-500 uppercase tracking-wider font-semibold">Total Bayar</div>
-                  <div className="text-xl font-bold text-emerald-600">{formatCurrency(payAmount)}</div>
+                  <div className="text-xl font-bold" style={{ color: theme.primary }}>{formatCurrency(payAmount)}</div>
                 </div>
               </div>
             </CardHeader>
@@ -420,23 +420,25 @@ function BookingContent() {
                           paymentMethod === "full" ? "border-emerald-500 bg-emerald-50" : "border-gray-100 bg-white hover:border-gray-200"
                         }`}
                       >
-                        <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${paymentMethod === "full" ? "border-emerald-500" : "border-gray-300"}`}>
-                          {paymentMethod === "full" && <div className="w-2.5 h-2.5 rounded-full bg-emerald-500" />}
+                        <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center`} style={{ borderColor: paymentMethod === "full" ? theme.primary : '#d1d5db' }}>
+                          {paymentMethod === "full" && <div className="w-2.5 h-2.5 rounded-full transition-all" style={{ backgroundColor: theme.primary }} />}
                         </div>
                         <div className="flex-1">
                           <div className="text-sm font-bold text-gray-900">Bayar Penuh</div>
                           <div className="text-xs text-gray-500 font-medium">Lunas Sekarang</div>
                         </div>
-                        <Badge className="bg-emerald-100 text-emerald-700 border-none text-[10px]">Recommended</Badge>
+                        <Badge className="border-none text-[10px]" style={{ backgroundColor: theme.accent, color: theme.primary }}>Recommended</Badge>
                       </div>
                       <div 
                         onClick={() => setPaymentMethod("dp")}
-                        className={`cursor-pointer p-4 rounded-xl border-2 transition-all flex items-center gap-3 ${
-                          paymentMethod === "dp" ? "border-emerald-500 bg-emerald-50" : "border-gray-100 bg-white hover:border-gray-200"
-                        }`}
+                        className={`cursor-pointer p-4 rounded-xl border-2 transition-all flex items-center gap-3`}
+                        style={{ 
+                          borderColor: paymentMethod === "dp" ? theme.primary : '#f3f4f6',
+                          backgroundColor: paymentMethod === "dp" ? theme.accent : 'white'
+                        }}
                       >
-                        <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${paymentMethod === "dp" ? "border-emerald-500" : "border-gray-300"}`}>
-                          {paymentMethod === "dp" && <div className="w-2.5 h-2.5 rounded-full bg-emerald-500" />}
+                        <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center`} style={{ borderColor: paymentMethod === "dp" ? theme.primary : '#d1d5db' }}>
+                          {paymentMethod === "dp" && <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: theme.primary }} />}
                         </div>
                         <div className="flex-1">
                           <div className="text-sm font-bold text-gray-900">DP 50%</div>
@@ -471,7 +473,7 @@ function BookingContent() {
                     </div>
                     {errors.voucher && <p className="text-red-500 text-[10px] mt-1 font-medium">{errors.voucher}</p>}
                     {isVoucherApplied && (
-                      <p className="text-emerald-600 text-[10px] mt-1 font-bold">✓ Voucher PROMO20 berhasil dipasang! (Diskon 20%)</p>
+                      <p className="text-[10px] mt-1 font-bold" style={{ color: theme.primary }}>✓ Voucher PROMO20 berhasil dipasang! (Diskon 20%)</p>
                     )}
                   </div>
 
@@ -486,8 +488,8 @@ function BookingContent() {
                         }}
                         className="group cursor-pointer p-4 rounded-xl border border-gray-200 bg-white hover:border-emerald-500 hover:shadow-md transition-all flex items-center gap-4"
                       >
-                        <div className="w-12 h-12 rounded-lg bg-gray-50 flex items-center justify-center group-hover:bg-emerald-50 transition-colors">
-                          <type.icon className="w-6 h-6 text-gray-400 group-hover:text-emerald-600" />
+                        <div className="w-12 h-12 rounded-lg bg-gray-50 flex items-center justify-center group-hover:bg-opacity-50 transition-colors" style={{ backgroundColor: theme.accent }}>
+                          <type.icon className="w-6 h-6 text-gray-400 group-hover:text-primary transition-colors" style={{ color: theme.primary }} />
                         </div>
                         <div className="flex-1">
                           <div className="font-bold text-gray-900">{type.name}</div>
@@ -529,8 +531,8 @@ function BookingContent() {
                         className="cursor-pointer p-4 rounded-xl border border-gray-200 bg-white hover:border-emerald-500 hover:shadow-sm transition-all flex items-center justify-between group"
                       >
                         <span className="font-medium text-gray-900">{detail}</span>
-                        <div className="w-6 h-6 rounded-full border border-gray-200 flex items-center justify-center group-hover:border-emerald-500 group-hover:bg-emerald-50 transition-all">
-                          <div className="w-2 h-2 rounded-full bg-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                        <div className="w-6 h-6 rounded-full border border-gray-200 flex items-center justify-center group-hover:border-primary group-hover:bg-opacity-20 transition-all" style={{ backgroundColor: theme.accent }}>
+                          <div className="w-2 h-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity" style={{ backgroundColor: theme.primary }} />
                         </div>
                       </div>
                     ))}
@@ -698,7 +700,8 @@ function BookingContent() {
                         )}
                         <Button 
                           onClick={() => handlePayment(true)}
-                          className="w-full bg-emerald-600 hover:bg-emerald-700 text-white h-14 rounded-xl shadow-lg shadow-emerald-500/20"
+                          className="w-full text-white h-14 rounded-xl shadow-lg"
+                          style={{ backgroundColor: theme.primary, boxShadow: `0 10px 15px -3px ${theme.primary}40` }}
                         >
                           Simulate Success
                         </Button>
@@ -729,8 +732,8 @@ function BookingContent() {
         {step === 4 && booking && (
           <Card className="bg-white border-gray-200 shadow-sm">
             <CardContent className="pt-8 text-center">
-              <div className="w-20 h-20 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-6">
-                <CheckCircle className="w-10 h-10 text-emerald-600" />
+              <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6" style={{ backgroundColor: theme.accent }}>
+                <CheckCircle className="w-10 h-10" style={{ color: theme.primary }} />
               </div>
               <h2 className="text-2xl font-bold text-gray-900 mb-2">Booking Berhasil!</h2>
               <p className="text-gray-600 mb-6">Simpan bukti booking ini untuk verifikasi saat datang</p>
@@ -738,7 +741,7 @@ function BookingContent() {
               {/* Booking Details */}
               <div className="p-6 rounded-lg bg-gray-50 border border-gray-200 text-left mb-6">
                 <div className="text-center mb-4">
-                  <Badge className="bg-emerald-600 text-white px-4 py-1 text-lg">{booking.id}</Badge>
+                  <Badge className="text-white px-4 py-1 text-lg border-none" style={{ backgroundColor: theme.primary }}>{booking.id}</Badge>
                 </div>
                 <div className="space-y-3 text-sm">
                   <div className="flex justify-between">
@@ -759,7 +762,7 @@ function BookingContent() {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-500">Status Pembayaran</span>
-                    <Badge className={booking.paymentStatus === "paid" ? "bg-emerald-600 text-white" : "bg-yellow-500 text-white"}>
+                    <Badge className="text-white border-none" style={{ backgroundColor: booking.paymentStatus === "paid" ? theme.primary : theme.secondary }}>
                       {booking.paymentStatus === "paid" ? "Lunas" : "DP 50%"}
                     </Badge>
                   </div>
@@ -788,7 +791,7 @@ function BookingContent() {
                   </div>
                   <div className="flex justify-between border-t border-gray-100 pt-2">
                     <span className="text-gray-500">Total Dibayar</span>
-                    <span className="text-emerald-600 font-bold text-lg">{formatCurrency(totalPrice)}</span>
+                    <span className="font-bold text-lg" style={{ color: theme.primary }}>{formatCurrency(totalPrice)}</span>
                   </div>
                 </div>
               </div>
