@@ -173,7 +173,18 @@ export default function VenueDetailPage() {
                 <span className="text-sm text-gray-600 font-normal"> /session</span>
               </div>
             </div>
-            <Link href={`/booking?field=${venue.id}`} className="flex-1">
+            <Link 
+              href={{
+                pathname: "/booking",
+                query: { 
+                  field: venue.id,
+                  date: selectedDate.toISOString(),
+                  time: selectedTime,
+                  duration: 1
+                }
+              }} 
+              className="flex-1"
+            >
               <Button
                 size="lg"
                 className="w-full text-white rounded-xl"
@@ -537,15 +548,27 @@ export default function VenueDetailPage() {
                   </div>
                 </div>
 
-                <Link href={`/booking?field=${venue.id}`}>
-                  <Button
-                    size="lg"
-                    className="w-full text-white rounded-xl shadow-sm"
-                    style={{ backgroundColor: theme.primary }}
-                  >
-                    Reservasi
-                  </Button>
-                </Link>
+                <Button
+                  size="lg"
+                  className="w-full text-white rounded-xl shadow-sm"
+                  style={{ backgroundColor: theme.primary }}
+                  onClick={() => {
+                    if (!selectedDate || !selectedTime) {
+                      // Basic validation feedback
+                      setIsDatePickerOpen(true);
+                      return;
+                    }
+                    const params = new URLSearchParams({
+                      field: venue.id,
+                      date: selectedDate.toISOString(),
+                      time: selectedTime,
+                      duration: "1"
+                    });
+                    window.location.href = `/booking?${params.toString()}`;
+                  }}
+                >
+                  Reservasi
+                </Button>
               </div>
             </div>
           </div>

@@ -3,7 +3,7 @@
 import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, User, Calendar, CreditCard, CheckCircle, Loader2, Building, QrCode, Wallet, Store, ChevronRight, Info, Download, Share2, Printer, Copy, Check, Tag, XCircle } from "lucide-react";
+import { ArrowLeft, User, Calendar, CreditCard, CheckCircle, Loader2, Building, QrCode, Wallet, Store, ChevronRight, Info, Download, Share2, Printer, Copy, Check, Tag, XCircle, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -12,6 +12,9 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { format } from "date-fns";
+import { id as idLocale } from "date-fns/locale";
+import Image from "next/image";
 import { 
   AlertDialog,
   AlertDialogAction,
@@ -45,15 +48,18 @@ function BookingContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const fieldParam = searchParams.get("field");
+  const dateParam = searchParams.get("date");
+  const timeParam = searchParams.get("time");
+  const durationParam = searchParams.get("duration");
   
   const [step, setStep] = useState(1);
   const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
   const [formData, setFormData] = useState<BookingFormData>({ name: "", email: "", phone: "" });
   const [scheduleData, setScheduleData] = useState<ScheduleData>({
     fieldId: fieldParam || fields[0].id,
-    date: undefined,
-    time: "",
-    duration: 1,
+    date: dateParam ? new Date(dateParam) : undefined,
+    time: timeParam || "",
+    duration: durationParam ? parseInt(durationParam) : 1,
   });
   const [paymentMethod, setPaymentMethod] = useState<"full" | "dp">("full");
   const [selectedPaymentType, setSelectedPaymentType] = useState<PaymentType | null>(null);
@@ -74,6 +80,65 @@ function BookingContent() {
     }
   }, [scheduleData.date]);
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [step]);
+
+  const BookingSummaryCard = () => (
+    <div className="p-6 border-b border-gray-100 bg-white">
+      <div className="flex gap-4">
+        <div className="relative w-24 h-24 rounded-xl overflow-hidden shadow-sm flex-shrink-0">
+          <Image 
+            src={selectedField.image}
+            alt={selectedField.name}
+            fill
+            className="object-cover"
+          />
+        </div>
+        <div className="flex-1 min-w-0">
+          <h3 className="font-bold text-gray-900 text-lg truncate">{selectedField.name}</h3>
+          <p className="text-gray-500 text-sm">Lapangan A</p>
+          <div className="flex items-center gap-1.5 mt-2">
+            <div className="flex items-center gap-1 bg-yellow-50 px-2 py-0.5 rounded-md">
+              <Star className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400" />
+              <span className="text-sm font-bold text-gray-900">4.9</span>
+            </div>
+            <span className="text-xs text-gray-400 font-medium">(15 rating)</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-6 p-4 rounded-xl bg-gray-50 border border-gray-100">
+        <div className="flex items-center gap-2 mb-1">
+          <CheckCircle className="w-4 h-4 text-emerald-500" />
+          <h4 className="font-bold text-sm text-gray-900 uppercase tracking-tight">Gratis Pembatalan</h4>
+        </div>
+        <p className="text-xs text-gray-500 leading-relaxed">
+          Pembatalan bisa dilakukan sebelum tanggal {scheduleData.date ? format(scheduleData.date, 'dd MMMM yyyy', { locale: idLocale }) : '25 Desember 2025'}
+        </p>
+      </div>
+
+      <div className="mt-6 space-y-3">
+        <div className="flex justify-between items-center text-sm">
+          <span className="text-gray-500">Harga Sewa ({scheduleData.duration} jam)</span>
+          <span className="font-semibold text-gray-900">{formatCurrency(basePrice)}</span>
+        </div>
+        <div className="flex justify-between items-center text-sm">
+          <span className="text-gray-500">Biaya Layanan</span>
+          <span className="font-semibold text-gray-900">{formatCurrency(serviceFee)}</span>
+        </div>
+        <div className="flex justify-between items-center text-sm">
+          <span className="text-gray-500">Pajak (11%)</span>
+          <span className="font-semibold text-gray-900">{formatCurrency(tax)}</span>
+        </div>
+        <div className="pt-4 border-t border-gray-100 flex justify-between items-center">
+          <span className="text-base font-bold text-gray-900">Total Tagihan</span>
+          <span className="text-xl font-black" style={{ color: theme.primary }}>{formatCurrency(totalPrice)}</span>
+        </div>
+      </div>
+    </div>
+  );
+
   const validateStep1 = () => {
     const newErrors: Record<string, string> = {};
     if (!formData.name.trim()) newErrors.name = "Nama harus diisi";
@@ -85,17 +150,10 @@ function BookingContent() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const validateStep2 = () => {
-    const newErrors: Record<string, string> = {};
-    if (!scheduleData.date) newErrors.date = "Pilih tanggal booking";
-    if (!scheduleData.time) newErrors.time = "Pilih waktu bermain";
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+
 
   const handleNext = () => {
     if (step === 1 && validateStep1()) setStep(2);
-    else if (step === 2 && validateStep2()) setStep(3);
   };
 
   const handlePayment = (success: boolean) => {
@@ -121,7 +179,7 @@ function BookingContent() {
         };
         setBooking(newBooking);
         setPaymentStatus("success");
-        setStep(4);
+        setStep(3);
       } else {
         setPaymentStatus("failed");
       }
@@ -161,9 +219,9 @@ function BookingContent() {
   };
 
   const handleBack = () => {
-    if (step === 3 && selectedPaymentDetail) {
+    if (step === 2 && selectedPaymentDetail) {
       setSelectedPaymentDetail(null);
-    } else if (step === 3 && selectedPaymentType) {
+    } else if (step === 2 && selectedPaymentType) {
       setSelectedPaymentType(null);
     } else if (step > 1) {
       setStep(step - 1);
@@ -174,9 +232,8 @@ function BookingContent() {
 
   const steps = [
     { num: 1, label: "Data Diri", icon: User },
-    { num: 2, label: "Jadwal", icon: Calendar },
-    { num: 3, label: "Pembayaran", icon: CreditCard },
-    { num: 4, label: "Selesai", icon: CheckCircle },
+    { num: 2, label: "Pembayaran", icon: CreditCard },
+    { num: 3, label: "Selesai", icon: CheckCircle },
   ];
 
   return (
@@ -193,25 +250,37 @@ function BookingContent() {
         </div>
 
         {/* Progress Steps */}
-        <div className="flex items-center justify-between mb-8">
-          {steps.map((s, i) => (
-            <div key={s.num} className="flex items-center">
-              <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all`} style={{ 
-                backgroundColor: step >= s.num ? theme.primary : 'white',
-                borderColor: step >= s.num ? theme.primary : '#d1d5db'
-              }}>
-                <s.icon className={`w-5 h-5 ${step >= s.num ? "text-white" : "text-gray-400"}`} />
+        <div className="relative mb-8 px-4">
+          <div className="absolute top-5 left-8 right-8 h-0.5 bg-gray-200" />
+          <div 
+            className="absolute top-5 left-8 h-0.5 transition-all duration-500 ease-in-out" 
+            style={{ 
+              backgroundColor: theme.primary,
+              width: step === 1 ? '0%' : step === 2 ? '50%' : '100%'
+            }} 
+          />
+          
+          <div className="relative flex justify-between">
+            {steps.map((s, i) => (
+              <div key={s.num} className="flex flex-col items-center group">
+                <div 
+                  className="relative z-10 flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all duration-300 bg-white" 
+                  style={{ 
+                    borderColor: step >= s.num ? theme.primary : '#d1d5db',
+                    backgroundColor: step >= s.num ? theme.primary : 'white',
+                    color: step >= s.num ? 'white' : '#9ca3af'
+                  }}
+                >
+                  <s.icon className={`w-5 h-5`} />
+                </div>
+                <div className="mt-3 text-center">
+                  <span className={`text-xs sm:text-sm font-semibold transition-colors duration-300 ${step >= s.num ? "text-gray-900" : "text-gray-400"}`}>
+                    {s.label}
+                  </span>
+                </div>
               </div>
-              <span className={`hidden sm:block ml-2 text-sm ${step >= s.num ? "text-gray-900 font-medium" : "text-gray-500"}`}>
-                {s.label}
-              </span>
-              {i < steps.length - 1 && (
-                <div className={`w-8 sm:w-16 h-0.5 mx-2`} style={{ 
-                  backgroundColor: step > s.num ? theme.primary : '#d1d5db'
-                }} />
-              )}
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
 
         {/* Step 1: User Details */}
@@ -262,137 +331,17 @@ function BookingContent() {
                   Batal Booking
                 </Button>
                 <Button onClick={handleNext} className="flex-1 text-white" style={{ backgroundColor: theme.primary }}>
-                  Lanjut ke Jadwal
+                  Lanjut ke Pembayaran
                 </Button>
               </div>
             </CardContent>
           </Card>
         )}
 
-        {/* Step 2: Schedule Selection */}
+
+
+        {/* Step 2: Payment */}
         {step === 2 && (
-          <div className="grid md:grid-cols-2 gap-6">
-            <Card className="bg-white border-gray-200 shadow-sm">
-              <CardHeader>
-                <CardTitle className="text-gray-900">Pilih Tanggal</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CalendarComponent
-                  mode="single"
-                  selected={scheduleData.date}
-                  onSelect={(date) => setScheduleData({ ...scheduleData, date, time: "" })}
-                  disabled={(date) => date < new Date()}
-                  className="rounded-md border border-gray-200 bg-white"
-                />
-                {errors.date && <p className="text-red-500 text-sm mt-2">{errors.date}</p>}
-              </CardContent>
-            </Card>
-
-            <Card className="bg-white border-gray-200 shadow-sm">
-              <CardHeader>
-                <CardTitle className="text-gray-900">Pilih Waktu & Durasi</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <Label className="text-gray-700">Lapangan</Label>
-                  <Select
-                    value={scheduleData.fieldId}
-                    onValueChange={(v) => setScheduleData({ ...scheduleData, fieldId: v })}
-                  >
-                    <SelectTrigger className="bg-white border-gray-300 text-gray-900 mt-1">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent className="bg-white border-gray-200">
-                      {fields.map((f) => (
-                        <SelectItem key={f.id} value={f.id} className="text-gray-900">
-                          {f.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {scheduleData.date && (
-                  <div>
-                    <Label className="text-gray-700">Waktu</Label>
-                    <div className="grid grid-cols-4 gap-2 mt-2">
-                      {timeSlots.map((slot) => (
-                        <Button
-                          key={slot.id}
-                          variant={scheduleData.time === slot.time ? "default" : "outline"}
-                          disabled={!slot.available}
-                          onClick={() => setScheduleData({ ...scheduleData, time: slot.time })}
-                          className={`text-sm transition-all`}
-                          style={scheduleData.time === slot.time ? { backgroundColor: theme.primary, color: 'white' } : {}}
-                        >
-                          {slot.time}
-                        </Button>
-                      ))}
-                    </div>
-                    {errors.time && <p className="text-red-500 text-sm mt-2">{errors.time}</p>}
-                  </div>
-                )}
-
-                <div>
-                  <Label className="text-gray-700">Durasi (jam)</Label>
-                  <Select
-                    value={scheduleData.duration.toString()}
-                    onValueChange={(v) => setScheduleData({ ...scheduleData, duration: parseInt(v) })}
-                  >
-                    <SelectTrigger className="bg-white border-gray-300 text-gray-900 mt-1">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent className="bg-white border-gray-200">
-                      {[1, 2, 3, 4].map((d) => (
-                        <SelectItem key={d} value={d.toString()} className="text-gray-900">
-                          {d} jam
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="p-4 rounded-lg bg-gray-50 border border-gray-200 space-y-2">
-                  <div className="flex justify-between text-sm text-gray-600">
-                    <span>Harga Sewa ({scheduleData.duration} jam)</span>
-                    <span>{formatCurrency(basePrice)}</span>
-                  </div>
-                  {isVoucherApplied && (
-                    <div className="flex justify-between text-sm text-emerald-600">
-                      <span>Voucher PROMO20 (20%)</span>
-                      <span>-{formatCurrency(discount)}</span>
-                    </div>
-                  )}
-                  <div className="flex justify-between text-sm text-gray-600">
-                    <span>Biaya Layanan</span>
-                    <span>{formatCurrency(serviceFee)}</span>
-                  </div>
-                  <div className="flex justify-between text-sm text-gray-600 border-b border-gray-200 pb-2">
-                    <span>Pajak (11%)</span>
-                    <span>{formatCurrency(tax)}</span>
-                  </div>
-                  <div className="flex justify-between text-lg font-bold text-gray-900 pt-1">
-                    <span>Total Tagihan</span>
-                    <span style={{ color: theme.primary }}>{formatCurrency(totalPrice)}</span>
-                  </div>
-                </div>
-
-                <div className="flex gap-2">
-                  <Button variant="outline" onClick={() => setIsCancelDialogOpen(true)} className="flex-1 border-gray-300 text-gray-700 hover:bg-gray-100 flex items-center justify-center gap-2">
-                    <XCircle className="w-4 h-4" />
-                    Batal Booking
-                  </Button>
-                  <Button onClick={handleNext} className="flex-1 text-white" style={{ backgroundColor: theme.primary }}>
-                    Lanjut ke Pembayaran
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
-
-        {/* Step 3: Payment */}
-        {step === 3 && (
           <Card className="bg-white border-gray-200 shadow-sm overflow-hidden">
             <CardHeader className="border-b border-gray-100 bg-gray-50/50">
               <div className="flex items-center justify-between">
@@ -407,6 +356,7 @@ function BookingContent() {
               </div>
             </CardHeader>
             <CardContent className="p-0">
+              <BookingSummaryCard />
               {!selectedPaymentType ? (
                 /* Screen 1: Choose Payment Type */
                 <div className="p-6">
@@ -728,8 +678,8 @@ function BookingContent() {
           </Card>
         )}
 
-        {/* Step 4: Confirmation */}
-        {step === 4 && booking && (
+        {/* Step 3: Confirmation */}
+        {step === 3 && booking && (
           <Card className="bg-white border-gray-200 shadow-sm">
             <CardContent className="pt-8 text-center">
               <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6" style={{ backgroundColor: theme.accent }}>

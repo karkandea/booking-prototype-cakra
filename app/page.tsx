@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { MapPin, Clock, Star, ChevronRight, Zap } from "lucide-react";
+import { MapPin, Clock, Star } from "lucide-react";
 import Link from "next/link";
 import { fields, formatCurrency } from "@/lib/data";
 import { Button } from "@/components/ui/button";
@@ -13,50 +13,8 @@ export default function Home() {
   const { theme } = useTheme();
   return (
     <div className="min-h-screen bg-gradient-to-b from-white via-gray-50 to-gray-100 text-gray-900">
-      {/* Hero Section */}
-      <section className="relative overflow-hidden">
-        {/* Gradient Orbs */}
-        <div className="absolute top-0 left-1/4 w-96 h-96 rounded-full blur-3xl opacity-40 shadow-2xl" style={{ backgroundColor: theme.accent }} />
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-200/40 rounded-full blur-3xl" />
-        
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32">
-          <div className="text-center">
-            <Badge variant="secondary" className="mb-6 px-4 py-2 border-none" style={{ backgroundColor: theme.accent, color: theme.primary }}>
-              <Zap className="w-3 h-3 mr-1" />
-              Booking Instan & Mudah
-            </Badge>
-            
-            <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight mb-6">
-              <span className="bg-gradient-to-r from-gray-900 via-gray-700 to-gray-600 bg-clip-text text-transparent">
-                Booking Lapangan
-              </span>
-              <br />
-              <span className="bg-clip-text text-transparent" style={{ backgroundImage: `linear-gradient(to r, ${theme.primary}, ${theme.secondary}, ${theme.primary})` }}>
-                Jadi Lebih Mudah
-              </span>
-            </h1>
-            
-            <p className="max-w-2xl mx-auto text-lg sm:text-xl text-gray-600 mb-10">
-              Platform booking lapangan olahraga terpercaya. Pilih jadwal, bayar online, dan main tanpa ribet.
-            </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/booking">
-                <Button size="lg" className="text-white px-8 py-6 text-lg rounded-xl shadow-lg transition-all hover:scale-105" style={{ backgroundColor: theme.primary, boxShadow: `0 10px 15px -3px ${theme.primary}40` }}>
-                  Book Now
-                  <ChevronRight className="ml-2 w-5 h-5" />
-                </Button>
-              </Link>
-
-            </div>
-          </div>
-          
-        </div>
-      </section>
-
-
       {/* Fields Section */}
-      <section className="py-20 border-t border-gray-200">
+      <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold mb-4" style={{ color: theme.textPrimary }}>Lapangan Tersedia</h2>
