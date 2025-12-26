@@ -67,57 +67,57 @@ export default function Home() {
           
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {fields.map((field, index) => (
-              <Card key={field.id} className="bg-white border-gray-200 overflow-hidden group hover:border-emerald-300 hover:shadow-xl transition-all">
-                <div className="aspect-video relative overflow-hidden">
-                  <Image
-                    src={`/field-${index + 1}.png`}
-                    alt={field.name}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
-                  <div className="absolute bottom-3 left-3">
-                    <Badge className="text-white border-none" style={{ backgroundColor: theme.primary }}>
-                      <Star className="w-3 h-3 mr-1" />
-                      Popular
-                    </Badge>
-                  </div>
-                </div>
-                
-                <CardHeader>
-                  <CardTitle className="text-gray-900">{field.name}</CardTitle>
-                  <CardDescription className="flex items-center text-gray-500">
-                    <MapPin className="w-4 h-4 mr-1" />
-                    {field.location}
-                  </CardDescription>
-                </CardHeader>
-                
-                <CardContent>
-                  <p className="text-gray-600 text-sm mb-4">{field.description}</p>
-                  <div className="flex flex-wrap gap-2">
-                    {field.facilities.slice(0, 3).map((facility) => (
-                      <Badge key={facility} variant="secondary" className="bg-gray-100 text-gray-700 border-gray-200">
-                        {facility}
+              <Link key={field.id} href={`/venue/${field.id}`}>
+                <Card className="bg-white border-gray-200 overflow-hidden group hover:border-emerald-300 hover:shadow-xl transition-all cursor-pointer">
+                  <div className="aspect-video relative overflow-hidden">
+                    <Image
+                      src={`/field-${index + 1}.png`}
+                      alt={field.name}
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                    <div className="absolute bottom-3 left-3">
+                      <Badge className="text-white border-none" style={{ backgroundColor: theme.primary }}>
+                        <Star className="w-3 h-3 mr-1" />
+                        Popular
                       </Badge>
-                    ))}
-                  </div>
-                </CardContent>
-                
-                <CardFooter className="flex items-center justify-between">
-                  <div>
-                    <div className="text-2xl font-bold" style={{ color: theme.primary }}>{formatCurrency(field.pricePerHour)}</div>
-                    <div className="text-xs text-gray-500 flex items-center">
-                      <Clock className="w-3 h-3 mr-1" />
-                      per jam
                     </div>
                   </div>
-                  <Link href={`/booking?field=${field.id}`}>
+                  
+                  <CardHeader>
+                    <CardTitle className="text-gray-900">{field.name}</CardTitle>
+                    <CardDescription className="flex items-center text-gray-500">
+                      <MapPin className="w-4 h-4 mr-1" />
+                      {field.location}
+                    </CardDescription>
+                  </CardHeader>
+                  
+                  <CardContent>
+                    <p className="text-gray-600 text-sm mb-4">{field.description}</p>
+                    <div className="flex flex-wrap gap-2">
+                      {field.facilities.slice(0, 3).map((facility) => (
+                        <Badge key={facility} variant="secondary" className="bg-gray-100 text-gray-700 border-gray-200">
+                          {facility}
+                        </Badge>
+                      ))}
+                    </div>
+                  </CardContent>
+                  
+                  <CardFooter className="flex items-center justify-between">
+                    <div>
+                      <div className="text-2xl font-bold" style={{ color: theme.primary }}>{formatCurrency(field.pricePerHour)}</div>
+                      <div className="text-xs text-gray-500 flex items-center">
+                        <Clock className="w-3 h-3 mr-1" />
+                        per jam
+                      </div>
+                    </div>
                     <Button className="text-white" style={{ backgroundColor: theme.primary }}>
-                      Book Now
+                      View Details
                     </Button>
-                  </Link>
-                </CardFooter>
-              </Card>
+                  </CardFooter>
+                </Card>
+              </Link>
             ))}
           </div>
         </div>

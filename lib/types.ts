@@ -8,6 +8,23 @@ export interface Field {
   pricePerHour: number;
   image: string;
   facilities: string[];
+  // Extended for venue detail page
+  images?: string[];
+  openHours?: string;
+  totalCourts?: number;
+  aboutVenue?: string;
+  rules?: string[];
+  reviews?: Review[];
+  rating?: number;
+}
+
+export interface Review {
+  id: string;
+  userName: string;
+  rating: number;
+  comment: string;
+  date: string;
+  timeAgo: string;
 }
 
 export interface TimeSlot {

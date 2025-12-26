@@ -5,14 +5,43 @@ import { Field, TimeSlot, Booking } from "./types";
 export const fields: Field[] = [
   {
     id: "field-1",
-    name: "Lapangan Futsal A",
-    location: "Gedung Utama, Lantai 1",
+    name: "My Tennis Club",
+    location: "Kota Jakarta Pusat, DKI Jakarta",
     description: "Lapangan futsal berstandar internasional dengan rumput sintetis berkualitas tinggi. Dilengkapi pencahayaan LED dan AC.",
-    pricePerHour: 150000,
+    pricePerHour: 120000,
     image: "/field-1.jpg",
-    facilities: ["AC", "LED Lighting", "Locker Room", "Shower", "Parking"],
+    facilities: ["Sub Waterpark & Villapark", "Kapur Wadah", "Musholla", "Tempat Parkir"],
+    images: ["/field-1.png", "/field-2.png", "/field-3.png"],
+    openHours: "08:00 - 22:00",
+    totalCourts: 2,
+    rating: 4.9,
+    aboutVenue: "Lorem ipsum dolor sit amet consectetur. Eleifend viverra nunc eget est consequat. Turpis hac ultrices sit laoreet justo enim egestas ac nunc. Nulla amet quisque nunc eget est consequat. Turpis hac ultrices sit laoreet justo enim egestas ac nunc.",
+    rules: [
+      "Venue ini diperuntukkan untuk kegiatan olahraga yang sehat. Fasilitas ini TIDAK diperbolehkan untuk kegiatan non-olahraga yang tidak pantas atau bentuk penggunaan yang tidak sesuai dengan tujuan venue.",
+      "Setiap absensi atau cancel venue akan dikenakan biaya 20% atau sesuai dengan kebijakan venue.",
+      "Dilarang membawa makanan dan minuman dari luar. Silahkan order di cafe venue saja.",
+      "Untuk booking pertama kali wajib bayar full payment. Mulai booking ke 2 baru bisa DP 50% dari total booking day."
+    ],
+    reviews: [
+      {
+        id: "r1",
+        userName: "Mironshka",
+        rating: 5,
+        comment: "Nice, quiet and clean place! I went with beautiful scenes on Skyscrapers. Nice view the guys work and and professional staff. Online is very nice to Lucksh well and clean access to well nice amenities. Perfect cause for lazy stay.",
+        date: "2025-12-20",
+        timeAgo: "14 hari lalu"
+      },
+      {
+        id: "r2",
+        userName: "Mironshka",
+        rating: 5,
+        comment: "Great staff and great location. closer to right and easy access to transaction hour. Friendly and  accomodated host. Good facility with nice amenities. Perfect cause for lazy  stay.",
+        date: "2025-12-18",
+        timeAgo: "3 hari lalu"
+      }
+    ]
   },
-  {
+  { 
     id: "field-2", 
     name: "Lapangan Futsal B",
     location: "Gedung Utama, Lantai 2",
@@ -20,6 +49,18 @@ export const fields: Field[] = [
     pricePerHour: 120000,
     image: "/field-2.jpg",
     facilities: ["AC", "LED Lighting", "Parking"],
+    images: ["/field-2.png", "/field-1.png", "/field-3.png"],
+    openHours: "08:00 - 22:00",
+    totalCourts: 1,
+    rating: 4.7,
+    aboutVenue: "Lapangan indoor dengan lantai vinyl premium yang nyaman untuk bermain futsal. Dilengkapi dengan sistem pencahayaan LED yang optimal dan pendingin udara.",
+    rules: [
+      "Venue ini diperuntukkan untuk kegiatan olahraga yang sehat. Fasilitas ini TIDAK diperbolehkan untuk kegiatan non-olahraga yang tidak pantas atau bentuk penggunaan yang tidak sesuai dengan tujuan venue.",
+      "Setiap absensi atau cancel venue akan dikenakan biaya 20% atau sesuai dengan kebijakan venue.",
+      "Dilarang membawa makanan dan minuman dari luar. Silahkan order di cafe venue saja.",
+      "Untuk booking pertama kali wajib bayar full payment. Mulai booking ke 2 baru bisa DP 50% dari total booking day."
+    ],
+    reviews: []
   },
   {
     id: "field-3",
@@ -29,6 +70,18 @@ export const fields: Field[] = [
     pricePerHour: 100000,
     image: "/field-3.jpg",
     facilities: ["Lighting", "Bench", "Parking"],
+    images: ["/field-3.png", "/field-1.png", "/field-2.png"],
+    openHours: "08:00 - 20:00",
+    totalCourts: 1,
+    rating: 4.5,
+    aboutVenue: "Lapangan basket outdoor dengan ring standar NBA. Perfect untuk bermain basket dengan teman-teman atau latihan tim.",
+    rules: [
+      "Venue ini diperuntukkan untuk kegiatan olahraga yang sehat. Fasilitas ini TIDAK diperbolehkan untuk kegiatan non-olahraga yang tidak pantas atau bentuk penggunaan yang tidak sesuai dengan tujuan venue.",
+      "Setiap absensi atau cancel venue akan dikenakan biaya 20% atau sesuai dengan kebijakan venue.",
+      "Dilarang membawa makanan dan minuman dari luar. Silahkan order di cafe venue saja.",
+      "Untuk booking pertama kali wajib bayar full payment. Mulai booking ke 2 baru bisa DP 50% dari total booking day."
+    ],
+    reviews: []
   },
 ];
 
