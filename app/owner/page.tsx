@@ -66,23 +66,11 @@ export default function OwnerDashboard() {
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
-          <Link href="/">
-            <Button variant="ghost" className="text-gray-600 hover:text-gray-900 mb-4">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Kembali ke Home
-            </Button>
-          </Link>
           <div className="flex justify-between items-start">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Owner Dashboard</h1>
-              <p className="text-gray-600">Kelola booking dan lihat status pembayaran</p>
+              <h1 className="text-3xl font-bold text-gray-900">Dashboard Overview</h1>
+              <p className="text-gray-600">Overview performa bisnis dan ringkasan aktivitas.</p>
             </div>
-            <Link href="/owner/settings">
-              <Button variant="outline" className="border-emerald-200 text-emerald-700 hover:bg-emerald-50">
-                <Layout className="w-4 h-4 mr-2" />
-                Brand Settings
-              </Button>
-            </Link>
           </div>
         </div>
 

@@ -26,8 +26,8 @@ export default function Home() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {fields.map((field, index) => (
               <Link key={field.id} href={`/venue/${field.id}`}>
-                <Card className="bg-white border-gray-200 overflow-hidden group hover:border-emerald-300 hover:shadow-xl transition-all cursor-pointer">
-                  <div className="aspect-video relative overflow-hidden">
+                <Card className="bg-white border-0 shadow-md hover:shadow-xl transition-all cursor-pointer overflow-hidden p-0 gap-0">
+                  <div className="aspect-video relative">
                     <Image
                       src={`/field-${index + 1}.png`}
                       alt={field.name}
@@ -43,7 +43,7 @@ export default function Home() {
                     </div>
                   </div>
                   
-                  <CardHeader>
+                  <CardHeader className="p-6 pb-2">
                     <CardTitle className="text-gray-900">{field.name}</CardTitle>
                     <CardDescription className="flex items-center text-gray-500">
                       <MapPin className="w-4 h-4 mr-1" />
@@ -51,8 +51,8 @@ export default function Home() {
                     </CardDescription>
                   </CardHeader>
                   
-                  <CardContent>
-                    <p className="text-gray-600 text-sm mb-4">{field.description}</p>
+                  <CardContent className="p-6 pt-0 pb-4">
+                    <p className="text-gray-600 text-sm mb-4 line-clamp-2">{field.description}</p>
                     <div className="flex flex-wrap gap-2">
                       {field.facilities.slice(0, 3).map((facility) => (
                         <Badge key={facility} variant="secondary" className="bg-gray-100 text-gray-700 border-gray-200">
@@ -62,12 +62,12 @@ export default function Home() {
                     </div>
                   </CardContent>
                   
-                  <CardFooter className="flex items-center justify-between">
+                  <CardFooter className="flex items-center justify-between p-6 pt-0">
                     <div>
                       <div className="text-2xl font-bold" style={{ color: theme.primary }}>{formatCurrency(field.pricePerHour)}</div>
                       <div className="text-xs text-gray-500 flex items-center">
                         <Clock className="w-3 h-3 mr-1" />
-                        per jam
+                        per sesi
                       </div>
                     </div>
                     <Button className="text-white" style={{ backgroundColor: theme.primary }}>

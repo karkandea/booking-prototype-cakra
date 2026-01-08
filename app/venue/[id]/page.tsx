@@ -23,8 +23,10 @@ export default function VenueDetailPage() {
   // Date and Time picker states
   const [selectedDate, setSelectedDate] = useState<Date>(new Date(2025, 11, 25)); // Dec 25, 2025
   const [selectedTime, setSelectedTime] = useState("08.00 - 10.00");
+  const [selectedCourt, setSelectedCourt] = useState("Lapangan 1");
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const [isTimePickerOpen, setIsTimePickerOpen] = useState(false);
+  const [isCourtPickerOpen, setIsCourtPickerOpen] = useState(false);
   const [calendarMonth, setCalendarMonth] = useState<Date>(new Date(2026, 2, 1)); // March 2026
   
   // Find the venue by ID
@@ -427,7 +429,12 @@ export default function VenueDetailPage() {
                                 {generateCalendarDays(calendarMonth).map((day, i) => (
                                   <button
                                     key={i}
-                                    onClick={() => day.date && setSelectedDate(day.date)}
+                                    onClick={() => {
+                                      if (day.date) {
+                                        setSelectedDate(day.date);
+                                        setIsDatePickerOpen(false);
+                                      }
+                                    }}
                                     disabled={!day.isCurrentMonth || day.isPast}
                                     className={`
                                       aspect-square flex items-center justify-center text-sm rounded-full transition-all
@@ -457,7 +464,12 @@ export default function VenueDetailPage() {
                                 {generateCalendarDays(addMonths(calendarMonth, 1)).map((day, i) => (
                                   <button
                                     key={i}
-                                    onClick={() => day.date && setSelectedDate(day.date)}
+                                    onClick={() => {
+                                      if (day.date) {
+                                        setSelectedDate(day.date);
+                                        setIsDatePickerOpen(false);
+                                      }
+                                    }}
                                     disabled={!day.isCurrentMonth || day.isPast}
                                     className={`
                                       aspect-square flex items-center justify-center text-sm rounded-full transition-all
@@ -537,15 +549,61 @@ export default function VenueDetailPage() {
                   </Popover>
 
                   {/* Row 3: TEMPAT */}
-                  <div className="p-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <div className="text-xs font-semibold text-gray-900 mb-1">TEMPAT</div>
-                        <div className="text-sm text-gray-900">Lapangan A</div>
+                  {/* Row 3: TEMPAT */}
+                  <Popover open={isCourtPickerOpen} onOpenChange={setIsCourtPickerOpen}>
+                    <PopoverTrigger asChild>
+                      <div className="p-4 cursor-pointer hover:bg-gray-50 transition-colors">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <div className="text-xs font-semibold text-gray-900 mb-1">TEMPAT</div>
+                            <div className="text-sm text-gray-900">{selectedCourt}</div>
+                          </div>
+                          <ChevronRight className="w-5 h-5 text-gray-400 rotate-90" />
+                        </div>
                       </div>
-                      <ChevronRight className="w-5 h-5 text-gray-400 rotate-90" />
-                    </div>
-                  </div>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start" side="bottom" sideOffset={4}>
+                      <div className="flex flex-col max-h-[300px] overflow-y-auto">
+                        {Array.from({ length: venue.totalCourts || 3 }).map((_, i) => (
+                          <div
+                            key={i}
+                            onClick={() => {
+                              setSelectedCourt(`Lapangan ${i + 1}`);
+                              setIsCourtPickerOpen(false);
+                            }}
+                            className={`
+                              flex items-center gap-3 p-3 transition-colors cursor-pointer border-b last:border-0 hover:bg-gray-50
+                              ${selectedCourt === `Lapangan ${i + 1}` ? 'bg-teal-50' : 'bg-white'}
+                            `}
+                          >
+                            <div className="relative w-16 h-12 rounded-md overflow-hidden flex-shrink-0 bg-gray-100">
+                              <Image
+                                src={images[i % images.length]}
+                                alt={`Lapangan ${i + 1}`}
+                                fill
+                                className="object-cover"
+                              />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className={`text-sm font-medium truncate ${selectedCourt === `Lapangan ${i + 1}` ? 'text-teal-900' : 'text-gray-900'}`}>
+                                Lapangan {i + 1}
+                              </div>
+                              <div className="text-xs text-gray-500 truncate">
+                                Lantai Vinyl • Indoor
+                              </div>
+                            </div>
+                            <Button 
+                              size="sm" 
+                              variant="outline" 
+                              className="h-7 text-xs px-2 flex-shrink-0 hover:bg-teal-50 hover:text-teal-700 hover:border-teal-200"
+                            >
+                              Lihat Detail
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                    </PopoverContent>
+                  </Popover>
                 </div>
 
                 <Button

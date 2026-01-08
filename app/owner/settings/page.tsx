@@ -48,12 +48,6 @@ export default function BrandSettings() {
       <div className="max-w-6xl mx-auto px-4 py-8">
         <div className="mb-8 flex justify-between items-center">
           <div>
-            <Link href="/owner">
-              <Button variant="ghost" className="text-gray-600 hover:text-gray-900 mb-4 p-0">
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Back to Dashboard
-              </Button>
-            </Link>
             <h1 className="text-3xl font-bold text-gray-900">Brand Theme Settings</h1>
             <p className="text-gray-600">Customize the look and feel of your field booking app.</p>
           </div>
