@@ -50,8 +50,13 @@ export function Sidebar() {
     <aside className="w-64 bg-white border-r border-gray-200 min-h-screen flex flex-col fixed left-0 top-0 bottom-0 z-50">
       {/* Brand Logo Area */}
       <div className="h-16 flex items-center px-6 border-b border-gray-100">
-        <div className="w-8 h-8 rounded-lg mr-3 flex items-center justify-center" style={{ backgroundColor: theme.primary }}>
-            <span className="text-white font-bold text-xl">V</span>
+        <div className="w-8 h-8 mr-3 relative rounded-lg overflow-hidden">
+             <Image 
+               src="/vanuego.jpg" 
+               alt="Vanuego Logo" 
+               fill 
+               className="object-cover"
+             />
         </div>
         <span className="font-bold text-gray-900 text-lg">Vendor Portal</span>
       </div>
