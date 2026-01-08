@@ -5,7 +5,52 @@ import NextImage from "next/image";
 import { usePathname } from "next/navigation";
 import { 
   LayoutDashboard, 
-// ... (lines 7-54 skipped for brevity)
+  MapPin, 
+  Calendar, 
+  BookOpen, 
+  Settings, 
+  LogOut, 
+  UserCircle 
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useTheme } from "@/context/ThemeContext";
+
+const menuItems = [
+  {
+    title: "Dashboard",
+    href: "/owner",
+    icon: LayoutDashboard,
+  },
+  {
+    title: "Manage Venue",
+    href: "/owner/venues",
+    icon: MapPin,
+  },
+  {
+    title: "Schedule",
+    href: "/owner/schedule",
+    icon: Calendar,
+  },
+  {
+    title: "Bookings",
+    href: "/owner/bookings",
+    icon: BookOpen,
+  },
+  {
+    title: "Account & Settings",
+    href: "/owner/settings",
+    icon: Settings,
+  },
+];
+
+export function Sidebar() {
+  const pathname = usePathname();
+  const { theme } = useTheme();
+
+  return (
+    <aside className="w-64 bg-white border-r border-gray-200 min-h-screen flex flex-col fixed left-0 top-0 bottom-0 z-50">
+      {/* Brand Logo Area */}
+      <div className="h-16 flex items-center px-6 border-b border-gray-100">
         <div className="w-8 h-8 mr-3 relative rounded-lg overflow-hidden">
              <NextImage 
                src="/vanuego.jpg" 
