@@ -86,7 +86,7 @@ export default function Home() {
       <footer className="py-12 border-t border-gray-200 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <p className="text-gray-500">
-            © 2025 Sports Field Booking Platform. Prototype Demo.
+            © 2025 Sports Field Booking Platform. Prototype Demo. v1.0.1
           </p>
         </div>
       </footer>
