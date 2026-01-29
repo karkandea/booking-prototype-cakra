@@ -134,6 +134,12 @@ export default function SchedulePage() {
         </CardContent>
       </Card>
 
+      <div className="mt-4 text-center">
+        <p className="text-sm text-gray-500 italic">
+          * Catatan: Klik tabel waktu di atas untuk mengatur dan menentukan blok slot lapangan
+        </p>
+      </div>
+
       {/* Modals */}
       <OperatingHoursModal
         isOpen={isOpHoursModalOpen}
