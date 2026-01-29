@@ -460,9 +460,37 @@ export default function VenueDetailPage() {
                             );
                           })}
                         </div>
-                        <p className="text-xs text-gray-500 text-center">
-                          Catatan: Anda dapat memilih lebih dari satu waktu sekaligus.
-                        </p>
+                        <div className="flex flex-col gap-3 pt-2 border-t border-gray-200">
+                          <p className="text-xs text-gray-500 text-center">
+                            Catatan: Anda dapat memilih lebih dari satu waktu sekaligus.
+                          </p>
+                          <div className="flex items-center justify-center gap-2">
+                            <span className="text-sm font-medium text-gray-700">
+                              Total Durasi:
+                            </span>
+                            <span className="text-sm font-bold text-teal-600">
+                              {selectedTime.length} jam
+                            </span>
+                          </div>
+                          <div className="flex gap-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="flex-1"
+                              onClick={() => setSelectedTime([])}
+                            >
+                              Reset
+                            </Button>
+                            <Button
+                              size="sm"
+                              className="flex-1 text-white"
+                              style={{ backgroundColor: theme.primary }}
+                              onClick={() => setIsTimePickerOpen(false)}
+                            >
+                              OK
+                            </Button>
+                          </div>
+                        </div>
                       </div>
                     </PopoverContent>
                   </Popover>
