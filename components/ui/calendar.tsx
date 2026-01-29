@@ -52,7 +52,7 @@ function Calendar({
         ),
         month: cn("flex flex-col w-full gap-4", defaultClassNames.month),
         nav: cn(
-          "flex items-center gap-1 w-full absolute top-0 inset-x-0 justify-between z-10 px-1",
+          "flex items-center gap-1 w-full absolute top-0 inset-x-0 justify-between z-10 px-1 pointer-events-none [&_button]:pointer-events-auto h-(--cell-size)",
           defaultClassNames.nav
         ),
         button_previous: cn(
