@@ -355,8 +355,8 @@ export default function VenueDetailPage() {
                         <button
                           key={page}
                           className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm font-medium transition-all ${page === 1
-                              ? "text-white shadow-sm"
-                              : "bg-white border border-gray-200 text-gray-700 hover:border-gray-300 hover:bg-gray-50"
+                            ? "text-white shadow-sm"
+                            : "bg-white border border-gray-200 text-gray-700 hover:border-gray-300 hover:bg-gray-50"
                             }`}
                           style={page === 1 ? { backgroundColor: theme.primary } : {}}
                         >
@@ -500,7 +500,7 @@ export default function VenueDetailPage() {
                             <Button
                               size="sm"
                               variant="outline"
-                              className="h-7 text-xs px-2 flex-shrink-0 hover:bg-teal-50 hover:text-teal-700 hover:border-teal-200"
+                              className="h-7 text-xs px-2 flex-shrink-0 text-gray-600 border-gray-200 bg-white hover:bg-teal-50 hover:text-teal-700 hover:border-teal-200"
                             >
                               Lihat Detail
                             </Button>
