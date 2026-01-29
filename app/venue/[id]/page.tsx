@@ -24,7 +24,7 @@ export default function VenueDetailPage() {
 
   // Date and Time picker states
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date(2025, 11, 25)); // Dec 25, 2025
-  const [selectedTime, setSelectedTime] = useState("08.00 - 10.00");
+  const [selectedTime, setSelectedTime] = useState<string[]>(["08.00 - 09.00"]);
   const [selectedCourt, setSelectedCourt] = useState("Lapangan 1");
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const [isTimePickerOpen, setIsTimePickerOpen] = useState(false);
@@ -68,7 +68,7 @@ export default function VenueDetailPage() {
     const queryParams = new URLSearchParams({
       field: venue.id,
       date: selectedDate.toISOString(),
-      time: selectedTime,
+      time: selectedTime.join(', '),
       duration: "1"
     });
     router.push(`/booking?${queryParams.toString()}`);
@@ -424,32 +424,45 @@ export default function VenueDetailPage() {
                         <div className="flex items-center justify-between">
                           <div>
                             <div className="text-xs font-semibold text-gray-600 mb-1">WAKTU</div>
-                            <div className="text-sm text-gray-900 font-medium">{selectedTime}</div>
+                            <div className="text-sm text-gray-900 font-medium truncate max-w-[200px]">
+                              {selectedTime.length > 0 ? selectedTime.join(', ') : 'Pilih Waktu'}
+                            </div>
                           </div>
                           <Clock className="w-5 h-5 text-gray-400" />
                         </div>
                       </div>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-4" align="start" side="bottom" sideOffset={4}>
-                      <div className="grid grid-cols-4 gap-2" style={{ maxWidth: '600px' }}>
-                        {generateTimeSlots().map((slot, i) => (
-                          <button
-                            key={i}
-                            onClick={() => {
-                              setSelectedTime(slot);
-                              setIsTimePickerOpen(false);
-                            }}
-                            className={`
-                              py-2 px-3 rounded-lg border text-center text-sm transition-all
-                              ${selectedTime === slot
-                                ? 'border-teal-600 bg-teal-50 text-teal-900 font-medium'
-                                : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300 hover:bg-gray-50'
-                              }
-                            `}
-                          >
-                            {slot}
-                          </button>
-                        ))}
+                      <div className="flex flex-col gap-4" style={{ maxWidth: '600px' }}>
+                        <div className="grid grid-cols-4 gap-2">
+                          {generateTimeSlots().map((slot, i) => {
+                            const isSelected = selectedTime.includes(slot);
+                            return (
+                              <button
+                                key={i}
+                                onClick={() => {
+                                  if (isSelected) {
+                                    setSelectedTime(prev => prev.filter(t => t !== slot));
+                                  } else {
+                                    setSelectedTime(prev => [...prev, slot]);
+                                  }
+                                }}
+                                className={`
+                                  py-2 px-3 rounded-lg border text-center text-sm transition-all
+                                  ${isSelected
+                                    ? 'border-teal-600 bg-teal-50 text-teal-900 font-medium'
+                                    : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300 hover:bg-gray-50'
+                                  }
+                                `}
+                              >
+                                {slot}
+                              </button>
+                            );
+                          })}
+                        </div>
+                        <p className="text-xs text-gray-500 text-center">
+                          Catatan: Anda dapat memilih lebih dari satu waktu sekaligus.
+                        </p>
                       </div>
                     </PopoverContent>
                   </Popover>
