@@ -37,47 +37,47 @@ export default function OperatingHoursModal({ isOpen, onClose, currentHours, onS
             Atur Jam Operasional
           </DialogTitle>
         </DialogHeader>
-        
+
         <div className="grid grid-cols-1 gap-6 py-4">
-           <div className="flex items-center justify-between space-x-2 bg-gray-50 p-4 rounded-lg">
+          <div className="flex items-center justify-between space-x-2 bg-gray-50 p-4 rounded-lg">
             <Label htmlFor="venue-closed" className="flex flex-col space-y-1">
               <span>Tutup Venue Hari Ini?</span>
               <span className="font-normal text-xs text-gray-500">Venue tidak akan menerima booking seharian ini.</span>
             </Label>
-            <Switch 
-                id="venue-closed" 
-                checked={hours.isClosed} 
-                onCheckedChange={(checked) => setHours({...hours, isClosed: checked})} 
+            <Switch
+              id="venue-closed"
+              checked={hours.isClosed}
+              onCheckedChange={(checked) => setHours({ ...hours, isClosed: checked })}
             />
           </div>
 
           <div className={`grid grid-cols-2 gap-4 ${hours.isClosed ? 'opacity-50 pointer-events-none' : ''}`}>
-             <div className="space-y-2">
-                <Label>Jam Buka</Label>
-                <div className="relative">
-                    <Input 
-                        type="number" 
-                        min={0} max={23} 
-                        value={hours.open} 
-                        onChange={(e) => setHours({...hours, open: parseInt(e.target.value)})}
-                        className="pl-8"
-                    />
-                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-500">:00</span>
-                </div>
-             </div>
-             <div className="space-y-2">
-                <Label>Jam Tutup</Label>
-                <div className="relative">
-                    <Input 
-                        type="number" 
-                        min={0} max={24} 
-                        value={hours.close} 
-                        onChange={(e) => setHours({...hours, close: parseInt(e.target.value)})}
-                         className="pl-8"
-                    />
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-500">:00</span>
-                </div>
-             </div>
+            <div className="space-y-2">
+              <Label className="text-gray-700 font-medium">Jam Buka</Label>
+              <div className="relative">
+                <Input
+                  type="number"
+                  min={0} max={23}
+                  value={hours.open}
+                  onChange={(e) => setHours({ ...hours, open: parseInt(e.target.value) })}
+                  className="pr-10 text-gray-900 font-medium"
+                />
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm font-medium text-gray-500">:00</span>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label className="text-gray-700 font-medium">Jam Tutup</Label>
+              <div className="relative">
+                <Input
+                  type="number"
+                  min={0} max={24}
+                  value={hours.close}
+                  onChange={(e) => setHours({ ...hours, close: parseInt(e.target.value) })}
+                  className="pr-10 text-gray-900 font-medium"
+                />
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm font-medium text-gray-500">:00</span>
+              </div>
+            </div>
           </div>
         </div>
 

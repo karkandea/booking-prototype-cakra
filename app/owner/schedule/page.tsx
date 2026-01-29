@@ -15,17 +15,17 @@ import { id } from "date-fns/locale";
 
 // Helper to generate mock courts for a venue
 const generateCourtsProxy = (venueName: string, count: number): Court[] => {
-    return Array.from({ length: count }, (_, i) => ({
-        id: `court-${i + 1}`,
-        name: `Lapangan ${i + 1}`
-    }));
+  return Array.from({ length: count }, (_, i) => ({
+    id: `court-${i + 1}`,
+    name: `Lapangan ${i + 1}`
+  }));
 };
 
 export default function SchedulePage() {
   const { venues } = useVenue();
   const [selectedVenueId, setSelectedVenueId] = useState<string>(venues[0]?.id || "");
   const [currentDate, setCurrentDate] = useState(new Date());
-  
+
   // Local state for operating hours & blocks (Mock persistence would go here)
   const [operatingHours, setOperatingHours] = useState<OperatingHours>({
     open: 8,
@@ -33,15 +33,15 @@ export default function SchedulePage() {
     isClosed: false
   });
   const [isOpHoursModalOpen, setIsOpHoursModalOpen] = useState(false);
-  
+
   // Initialize blocks with some dummy data
   const [blocks, setBlocks] = useState<ScheduleBlock[]>([
-      { id: "b1", fieldId: "court-1", startHour: 10, duration: 2, status: "booked", title: "Booked", bookingId: "BK-001" },
-      { id: "b2", fieldId: "court-2", startHour: 14, duration: 1, status: "maintenance", title: "Repairs" }
+    { id: "b1", fieldId: "court-1", startHour: 10, duration: 2, status: "booked", title: "Booked", bookingId: "BK-001" },
+    { id: "b2", fieldId: "court-2", startHour: 14, duration: 1, status: "maintenance", title: "Repairs" }
   ]);
 
   const selectedVenue = venues.find(v => v.id === selectedVenueId);
-  
+
   // Dynamically generate courts based on the selected venue's totalCourts
   const courts = useMemo(() => {
     if (!selectedVenue) return [];
@@ -55,7 +55,7 @@ export default function SchedulePage() {
   };
 
   if (venues.length === 0) {
-      return <div className="p-8">Belum ada venue. Silahkan tambah venue terlebih dahulu.</div>;
+    return <div className="p-8">Belum ada venue. Silahkan tambah venue terlebih dahulu.</div>;
   }
 
   return (
@@ -68,70 +68,70 @@ export default function SchedulePage() {
         </div>
 
         <div className="flex items-center gap-3 bg-white p-2 rounded-lg border border-gray-200 shadow-sm">
-             <Select value={selectedVenueId} onValueChange={setSelectedVenueId}>
-                <SelectTrigger className="w-[180px] border-none shadow-none focus:ring-0 font-semibold">
-                    <SelectValue placeholder="Pilih Venue" />
-                </SelectTrigger>
-                <SelectContent>
-                    {venues.map(v => (
-                        <SelectItem key={v.id} value={v.id}>{v.name}</SelectItem>
-                    ))}
-                </SelectContent>
-             </Select>
+          <Select value={selectedVenueId} onValueChange={setSelectedVenueId}>
+            <SelectTrigger className="w-[200px] bg-white border border-gray-300 shadow-sm focus:ring-2 focus:ring-teal-500 font-semibold text-gray-900">
+              <SelectValue placeholder="Pilih Venue" />
+            </SelectTrigger>
+            <SelectContent>
+              {venues.map(v => (
+                <SelectItem key={v.id} value={v.id}>{v.name}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
 
-             <div className="h-6 w-[1px] bg-gray-200"></div>
+          <div className="h-6 w-[1px] bg-gray-200"></div>
 
-             <div className="flex items-center gap-2">
-                 <Button variant="ghost" size="icon" onClick={() => handleDateChange(-1)}>
-                     <ChevronLeft className="w-4 h-4" />
-                 </Button>
-                 <span className="text-sm font-medium w-32 text-center text-gray-700">
-                     {format(currentDate, "d MMM yyyy", { locale: id })}
-                 </span>
-                 <Button variant="ghost" size="icon" onClick={() => handleDateChange(1)}>
-                     <ChevronRight className="w-4 h-4" />
-                 </Button>
-             </div>
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" size="icon" onClick={() => handleDateChange(-1)}>
+              <ChevronLeft className="w-4 h-4" />
+            </Button>
+            <span className="text-sm font-medium w-32 text-center text-gray-700">
+              {format(currentDate, "d MMM yyyy", { locale: id })}
+            </span>
+            <Button variant="ghost" size="icon" onClick={() => handleDateChange(1)}>
+              <ChevronRight className="w-4 h-4" />
+            </Button>
+          </div>
         </div>
       </div>
 
       {/* Toolbar */}
       <div className="flex justify-between items-center mb-6">
         <div className="flex gap-4 text-sm">
-            <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-emerald-500"></div>
-                <span>Booked</span>
-            </div>
-             <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-gray-600"></div>
-                <span>Blocked</span>
-            </div>
-             <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-orange-500"></div>
-                <span>Maintenance</span>
-            </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-emerald-500"></div>
+            <span>Booked</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-gray-600"></div>
+            <span>Blocked</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-orange-500"></div>
+            <span>Maintenance</span>
+          </div>
         </div>
-        
+
         <Button variant="outline" className="gap-2" onClick={() => setIsOpHoursModalOpen(true)}>
-            <Settings className="w-4 h-4" />
-            Atur Jam Operasional
+          <Settings className="w-4 h-4" />
+          Atur Jam Operasional
         </Button>
       </div>
 
       {/* Main Timeline Card */}
       <Card className="border-gray-200 shadow-sm bg-white overflow-hidden">
         <CardContent className="p-0">
-            <Timeline 
-                courts={courts} 
-                operatingHours={operatingHours}
-                blocks={blocks}
-                onBlockChange={setBlocks}
-            />
+          <Timeline
+            courts={courts}
+            operatingHours={operatingHours}
+            blocks={blocks}
+            onBlockChange={setBlocks}
+          />
         </CardContent>
       </Card>
 
       {/* Modals */}
-      <OperatingHoursModal 
+      <OperatingHoursModal
         isOpen={isOpHoursModalOpen}
         onClose={() => setIsOpHoursModalOpen(false)}
         currentHours={operatingHours}
