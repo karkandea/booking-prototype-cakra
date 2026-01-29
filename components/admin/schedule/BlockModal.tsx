@@ -85,7 +85,7 @@ export default function BlockModal({ isOpen, onClose, block, onSave, onDelete }:
                 <SelectTrigger className="h-14 bg-gray-50 border-transparent focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 rounded-xl text-lg font-semibold text-gray-900">
                   <SelectValue placeholder="Pilih durasi" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-white">
                   <SelectItem value="1">1 Jam</SelectItem>
                   <SelectItem value="2">2 Jam</SelectItem>
                   <SelectItem value="3">3 Jam</SelectItem>
@@ -105,7 +105,7 @@ export default function BlockModal({ isOpen, onClose, block, onSave, onDelete }:
               <SelectTrigger className="h-14 bg-gray-50 border-transparent focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 rounded-xl text-base font-medium text-gray-900">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-white">
                 <SelectItem value="blocked">
                   <span className="flex items-center gap-2">
                     <span className="w-2 h-2 rounded-full bg-red-500"></span>
