@@ -71,9 +71,22 @@ export default function BlockModal({ isOpen, onClose, block, onSave, onDelete }:
           <div className="grid grid-cols-2 gap-6">
             <div className="space-y-2">
               <Label className="text-xs font-bold text-gray-400 uppercase tracking-wider">Jam Mulai</Label>
-              <div className="flex items-center justify-center h-14 bg-gray-50 border border-transparent rounded-xl text-xl font-bold text-gray-900">
-                {data.startHour?.toString().padStart(2, '0')}:00
-              </div>
+              <Select
+                disabled={isReadOnly}
+                value={data.startHour?.toString()}
+                onValueChange={(val) => setData({ ...data, startHour: parseInt(val) })}
+              >
+                <SelectTrigger className="h-14 bg-gray-50 border-transparent focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 rounded-xl text-xl font-bold text-gray-900 justify-center">
+                  <SelectValue placeholder="Pilih jam" />
+                </SelectTrigger>
+                <SelectContent className="bg-white max-h-[200px]">
+                  {Array.from({ length: 24 }).map((_, i) => (
+                    <SelectItem key={i} value={i.toString()} className="justify-center text-lg font-medium">
+                      {i.toString().padStart(2, '0')}:00
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             <div className="space-y-2">
               <Label className="text-xs font-bold text-gray-400 uppercase tracking-wider">Durasi</Label>
@@ -85,11 +98,10 @@ export default function BlockModal({ isOpen, onClose, block, onSave, onDelete }:
                 <SelectTrigger className="h-14 bg-gray-50 border-transparent focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 rounded-xl text-lg font-semibold text-gray-900">
                   <SelectValue placeholder="Pilih durasi" />
                 </SelectTrigger>
-                <SelectContent className="bg-white">
-                  <SelectItem value="1">1 Jam</SelectItem>
-                  <SelectItem value="2">2 Jam</SelectItem>
-                  <SelectItem value="3">3 Jam</SelectItem>
-                  <SelectItem value="4">4 Jam</SelectItem>
+                <SelectContent className="bg-white max-h-[200px]">
+                  {Array.from({ length: 10 }).map((_, i) => (
+                    <SelectItem key={i} value={(i + 1).toString()}>{i + 1} Jam</SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
