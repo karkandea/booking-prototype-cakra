@@ -67,30 +67,34 @@ export default function SchedulePage() {
           <p className="text-gray-600">Atur ketersediaan dan jam operasional lapangan.</p>
         </div>
 
-        <div className="flex items-center gap-3 bg-white p-2 rounded-lg border border-gray-200 shadow-sm">
-          <Select value={selectedVenueId} onValueChange={setSelectedVenueId}>
-            <SelectTrigger className="w-[200px] bg-white border border-gray-300 shadow-sm focus:ring-2 focus:ring-teal-500 font-semibold text-gray-900">
-              <SelectValue placeholder="Pilih Venue" />
-            </SelectTrigger>
-            <SelectContent>
-              {venues.map(v => (
-                <SelectItem key={v.id} value={v.id}>{v.name}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+        <div className="flex gap-6 items-end">
+          <div className="space-y-2">
+            <span className="text-sm font-bold text-gray-700">Lokasi/Lapangan:</span>
+            <Select value={selectedVenueId} onValueChange={setSelectedVenueId}>
+              <SelectTrigger className="w-[220px] bg-white border border-gray-300 shadow-sm focus:ring-2 focus:ring-teal-500 font-semibold text-gray-900">
+                <SelectValue placeholder="Pilih Venue" />
+              </SelectTrigger>
+              <SelectContent className="bg-white">
+                {venues.map(v => (
+                  <SelectItem key={v.id} value={v.id}>{v.name}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
 
-          <div className="h-6 w-[1px] bg-gray-200"></div>
-
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" onClick={() => handleDateChange(-1)}>
-              <ChevronLeft className="w-4 h-4" />
-            </Button>
-            <span className="text-sm font-medium w-32 text-center text-gray-700">
-              {format(currentDate, "d MMM yyyy", { locale: id })}
-            </span>
-            <Button variant="ghost" size="icon" onClick={() => handleDateChange(1)}>
-              <ChevronRight className="w-4 h-4" />
-            </Button>
+          <div className="space-y-2">
+            <span className="text-sm font-bold text-gray-700">Tanggal</span>
+            <div className="flex items-center gap-2 bg-white px-2 py-1 rounded-md border border-gray-300 h-10 shadow-sm">
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleDateChange(-1)}>
+                <ChevronLeft className="w-4 h-4" />
+              </Button>
+              <span className="text-sm font-medium w-36 text-center text-gray-900">
+                {format(currentDate, "d MMM yyyy", { locale: id })}
+              </span>
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleDateChange(1)}>
+                <ChevronRight className="w-4 h-4" />
+              </Button>
+            </div>
           </div>
         </div>
       </div>
