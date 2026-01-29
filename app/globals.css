@@ -25,6 +25,7 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+
 .pattern-diagonal-lines {
   background-image: repeating-linear-gradient(
     45deg,
@@ -33,4 +34,8 @@ body {
     #e5e7eb 5px,
     #e5e7eb 6px
   );
+}
+
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 2rem);
 }
