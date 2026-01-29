@@ -46,7 +46,8 @@ export default function Home() {
           <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 delay-300">
             <Button
               size="lg"
-              className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-full px-8 py-6 text-lg font-semibold shadow-lg shadow-emerald-500/30 hover:shadow-emerald-500/40 transition-all"
+              onClick={() => document.getElementById('venues')?.scrollIntoView({ behavior: 'smooth' })}
+              className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-full px-8 py-6 text-lg font-semibold shadow-lg shadow-emerald-500/30 hover:shadow-emerald-500/40 transition-all cursor-pointer"
             >
               Book Now
               <ChevronRight className="w-5 h-5 ml-2" />
@@ -56,7 +57,7 @@ export default function Home() {
       </section>
 
       {/* Fields Section */}
-      <section className="py-12 bg-white/50 backdrop-blur-sm">
+      <section id="venues" className="py-12 bg-white/50 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between mb-8">
             <h2 className="text-2xl font-bold text-gray-900">Lapangan Tersedia</h2>
