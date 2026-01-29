@@ -467,7 +467,7 @@ export default function VenueDetailPage() {
                         </div>
                       </div>
                     </PopoverTrigger>
-                    <PopoverContent className="w-[300px] p-0" align="start" side="bottom" sideOffset={4}>
+                    <PopoverContent className="w-[300px] p-0 overflow-hidden rounded-xl" align="start" side="bottom" sideOffset={4}>
                       <div className="flex flex-col max-h-[300px] overflow-y-auto">
                         {Array.from({ length: venue.totalCourts || 3 }).map((_, i) => (
                           <div
